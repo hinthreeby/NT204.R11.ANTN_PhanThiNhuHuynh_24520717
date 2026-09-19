@@ -1,0 +1,40 @@
+[PCAP MODE] Reading packets from: TEST\tcp_data\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789827327.944282,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 54,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63314,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 80,
+    "sequence": 1001,
+    "acknowledgment": 2001,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 57214,
+    "urgent_pointer": 0,
+    "payload_length": 14
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  }
+}
+[PCAP MODE] Processed 1 packets.
