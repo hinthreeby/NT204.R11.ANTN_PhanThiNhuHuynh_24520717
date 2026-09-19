@@ -1,0 +1,114 @@
+[PCAP MODE] Reading packets from: TEST\tcp_handshake\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789827121.133507,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 40,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63328,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 80,
+    "sequence": 1000,
+    "acknowledgment": 0,
+    "data_offset": 5,
+    "flags": [
+      "SYN"
+    ],
+    "window": 8192,
+    "checksum": 17643,
+    "urgent_pointer": 0,
+    "payload_length": 0
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  }
+}
+{
+  "packet_id": 2,
+  "timestamp": 1789827121.133507,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 40,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63328,
+    "src_ip": "192.168.1.20",
+    "dst_ip": "192.168.1.10"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 80,
+    "dst_port": 50000,
+    "sequence": 2000,
+    "acknowledgment": 1001,
+    "data_offset": 5,
+    "flags": [
+      "SYN",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 15626,
+    "urgent_pointer": 0,
+    "payload_length": 0
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  }
+}
+{
+  "packet_id": 3,
+  "timestamp": 1789827121.133507,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 40,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63328,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 80,
+    "sequence": 1001,
+    "acknowledgment": 2001,
+    "data_offset": 5,
+    "flags": [
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 15627,
+    "urgent_pointer": 0,
+    "payload_length": 0
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  }
+}
+[PCAP MODE] Processed 3 packets.
