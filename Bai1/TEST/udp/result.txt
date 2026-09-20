@@ -1,0 +1,32 @@
+[PCAP MODE] Reading packets from: TEST\udp\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789874416.010164,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 42,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 17,
+    "checksum": 63315,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "UDP",
+    "src_port": 50000,
+    "dst_port": 9999,
+    "length": 22,
+    "checksum": 13180,
+    "payload_length": 14
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  }
+}
+[PCAP MODE] Processed 1 packets.
