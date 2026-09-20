@@ -1,3 +1,4 @@
+from scapy.layers.dns import DNS
 HTTP_METHODS = (
     b"GET ",
     b"POST ",
@@ -12,6 +13,7 @@ HTTP_RESPONSE_PREFIXES = (
     b"HTTP/1.1 ",
 )
 
+DNS_STANDARD_PORTS = {53}
 HTTP_STANDARD_PORTS = {80}
 
 
@@ -41,32 +43,72 @@ def detect_application_protocol(
     payload: bytes,
 ) -> str:
     """
-    Detect the application protocol using both
-    port information and payload signatures.
+    Detect application protocol using transport information,
+    ports, and payload signatures.
 
     Currently supported:
     - HTTP/1.x
-
-    DNS and SMTP will be added later.
+    - DNS
     """
-
-    if transport_protocol != "TCP":
-        return "UNKNOWN"
 
     if not payload:
         return "UNKNOWN"
 
-    uses_standard_http_port = (
-        src_port in HTTP_STANDARD_PORTS
-        or dst_port in HTTP_STANDARD_PORTS
-    )
+    # TCP application protocols
 
-    # Standard HTTP port + valid HTTP payload
-    if uses_standard_http_port and is_http_payload(payload):
-        return "HTTP"
+    if transport_protocol == "TCP":
+        uses_standard_http_port = (
+            src_port in HTTP_STANDARD_PORTS
+            or dst_port in HTTP_STANDARD_PORTS
+        )
 
-    # Payload-based detection allows HTTP on non-standard ports
-    if is_http_payload(payload):
-        return "HTTP"
+        if uses_standard_http_port and is_http_payload(payload):
+            return "HTTP"
+
+        # Payload-based detection also supports
+        # HTTP on non-standard ports.
+        if is_http_payload(payload):
+            return "HTTP"
+
+    # UDP application protocols
+    elif transport_protocol == "UDP":
+        uses_standard_dns_port = (
+            src_port in DNS_STANDARD_PORTS
+            or dst_port in DNS_STANDARD_PORTS
+        )
+
+        if uses_standard_dns_port and is_dns_payload(payload):
+            return "DNS"
+
+        # Payload-based detection
+        if is_dns_payload(payload):
+            return "DNS"
 
     return "UNKNOWN"
+
+def is_dns_payload(payload: bytes) -> bool:
+    """
+    Check whether a UDP payload looks like a DNS message.
+    """
+
+    if not payload:
+        return False
+
+    # DNS header has a minimum size of 12 bytes
+    if len(payload) < 12:
+        return False
+
+    try:
+        dns = DNS(payload)
+    except Exception:
+        return False
+
+    qdcount = int(dns.qdcount or 0)
+    ancount = int(dns.ancount or 0)
+
+    # A DNS query normally contains at least one question.
+    # A DNS response may contain a question and/or answers.
+    if qdcount > 0 or ancount > 0:
+        return True
+
+    return False
