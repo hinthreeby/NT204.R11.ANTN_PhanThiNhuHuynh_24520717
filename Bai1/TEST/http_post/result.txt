@@ -1,0 +1,50 @@
+[PCAP MODE] Reading packets from: TEST\http_post\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789911199.094337,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 179,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63189,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50001,
+    "dst_port": 80,
+    "sequence": 1001,
+    "acknowledgment": 2001,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 55511,
+    "urgent_pointer": 0,
+    "payload_length": 139
+  },
+  "application": {
+    "protocol": "HTTP",
+    "type": "request",
+    "method": "POST",
+    "uri": "/login",
+    "version": "HTTP/1.1",
+    "headers": {
+      "Host": "example.com",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Length": "27"
+    },
+    "body": "username=admin&password=123"
+  }
+}
+[PCAP MODE] Processed 1 packets.
