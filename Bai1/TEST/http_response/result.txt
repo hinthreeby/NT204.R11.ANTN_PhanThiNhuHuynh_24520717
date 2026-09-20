@@ -1,0 +1,50 @@
+[PCAP MODE] Reading packets from: TEST\http_response\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789915650.698832,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 128,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63240,
+    "src_ip": "192.168.1.20",
+    "dst_ip": "192.168.1.10"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 80,
+    "dst_port": 50000,
+    "sequence": 2001,
+    "acknowledgment": 1001,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 59422,
+    "urgent_pointer": 0,
+    "payload_length": 88
+  },
+  "application": {
+    "protocol": "HTTP",
+    "type": "response",
+    "version": "HTTP/1.1",
+    "status_code": 200,
+    "reason": "OK",
+    "headers": {
+      "Content-Type": "text/plain",
+      "Content-Length": "5",
+      "Server": "Day3-Test"
+    },
+    "body": "Hello"
+  }
+}
+[PCAP MODE] Processed 1 packets.
