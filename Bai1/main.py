@@ -27,6 +27,16 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Path to a PCAP file to process",
     )
 
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="output/events.jsonl",
+        help=(
+            "Path to the JSON Lines output file "
+            "(default: output/events.jsonl)"
+        ),
+    )
+
     return parser
 
 
@@ -38,7 +48,10 @@ def main() -> None:
         capture_live(args.interface)
 
     elif args.pcap:
-        read_pcap(args.pcap)
+        read_pcap(
+            args.pcap,
+            args.output,
+        )
 
 
 if __name__ == "__main__":
