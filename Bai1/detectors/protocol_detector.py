@@ -16,6 +16,10 @@ HTTP_RESPONSE_PREFIXES = (
 DNS_STANDARD_PORTS = {53}
 HTTP_STANDARD_PORTS = {80}
 
+SMTP_STANDARD_PORTS = {
+    25,
+    587,
+}
 
 def is_http_payload(payload: bytes) -> bool:
     """
@@ -110,5 +114,46 @@ def is_dns_payload(payload: bytes) -> bool:
     # A DNS response may contain a question and/or answers.
     if qdcount > 0 or ancount > 0:
         return True
+
+    return False
+
+def is_smtp_payload(payload: bytes) -> bool:
+    """
+    Check whether a TCP payload looks like SMTP.
+    """
+
+    if not payload:
+        return False
+
+    first_line = payload.splitlines()[0].strip()
+
+    upper_line = first_line.upper()
+
+    smtp_commands = (
+        b"HELO ",
+        b"EHLO ",
+        b"MAIL FROM:",
+        b"RCPT TO:",
+        b"DATA",
+        b"QUIT",
+        b"RSET",
+        b"NOOP",
+    )
+
+    if upper_line.startswith(smtp_commands):
+        return True
+
+    # SMTP responses start with a 3-digit status code.
+    # Examples: 220 Service ready, 250 OK, 550 Requested action not taken
+
+    if (
+        len(first_line) >= 3
+        and first_line[:3].isdigit()
+    ):
+        if len(first_line) == 3:
+            return True
+
+        if first_line[3:4] in (b" ", b"-"):
+            return True
 
     return False
