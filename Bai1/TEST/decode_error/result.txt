@@ -1,0 +1,2 @@
+[PCAP MODE] Reading packets from: TEST\decode_error\input.pcap
+[ERROR] Failed to process PCAP file: UnicodeEncodeError: 'charmap' codec can't encode characters in position 888-890: character maps to <undefined>
