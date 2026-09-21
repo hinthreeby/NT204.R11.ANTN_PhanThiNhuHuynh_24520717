@@ -5,6 +5,7 @@ from parsers.http_parser import parse_http
 from parsers.ipv4_parser import parse_ipv4
 from parsers.tcp_parser import parse_tcp
 from parsers.udp_parser import parse_udp
+from parsers.dns_parser import parse_dns
 
 
 def process_packet(packet, packet_id: int) -> dict:
@@ -80,9 +81,21 @@ def process_packet(packet, packet_id: int) -> dict:
 
         event["transport"] = parse_udp(udp_layer)
 
-        # DNS will be added later.
-        event["application"] = {
-            "protocol": "UNKNOWN"
-        }
+        payload = bytes(udp_layer.payload)
+
+        application_protocol = detect_application_protocol(
+            transport_protocol="UDP",
+            src_port=udp_layer.sport,
+            dst_port=udp_layer.dport,
+            payload=payload,
+        )
+
+        if application_protocol == "DNS":
+            event["application"] = parse_dns(payload)
+
+        else:
+            event["application"] = {
+                "protocol": "UNKNOWN"
+            }
 
     return event
