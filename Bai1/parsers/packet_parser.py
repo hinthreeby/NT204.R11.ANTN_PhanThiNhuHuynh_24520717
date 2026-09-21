@@ -6,6 +6,7 @@ from parsers.ipv4_parser import parse_ipv4
 from parsers.tcp_parser import parse_tcp
 from parsers.udp_parser import parse_udp
 from parsers.dns_parser import parse_dns
+from parsers.smtp_parser import parse_smtp
 
 
 def process_packet(packet, packet_id: int) -> dict:
@@ -70,6 +71,9 @@ def process_packet(packet, packet_id: int) -> dict:
         # Application parsing
         if application_protocol == "HTTP":
             event["application"] = parse_http(payload)
+
+        elif application_protocol == "SMTP":
+            event["application"] = parse_smtp(payload)
 
         else:
             event["application"] = {
