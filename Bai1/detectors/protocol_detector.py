@@ -1,4 +1,4 @@
-from scapy.layers.dns import DNS
+from scapy.layers.dns import DNS, DNSQR, DNSRR
 HTTP_METHODS = (
     b"GET ",
     b"POST ",
@@ -97,22 +97,14 @@ def detect_application_protocol(
         if uses_standard_dns_port and is_dns_payload(payload):
             return "DNS"
 
-        # Payload-based detection
-        if is_dns_payload(payload):
-            return "DNS"
-
     return "UNKNOWN"
 
 def is_dns_payload(payload: bytes) -> bool:
     """
-    Check whether a UDP payload looks like a DNS message.
+    Check whether a UDP payload is a structurally valid DNS message.
     """
 
-    if not payload:
-        return False
-
-    # DNS header has a minimum size of 12 bytes
-    if len(payload) < 12:
+    if not payload or len(payload) < 12:
         return False
 
     try:
@@ -120,13 +112,39 @@ def is_dns_payload(payload: bytes) -> bool:
     except Exception:
         return False
 
-    qdcount = int(dns.qdcount or 0)
-    ancount = int(dns.ancount or 0)
+    # DNS query
+    if int(dns.qr) == 0:
+        if int(dns.qdcount or 0) < 1:
+            return False
 
-    # A DNS query normally contains at least one question.
-    # A DNS response may contain a question and/or answers.
-    if qdcount > 0 or ancount > 0:
-        return True
+        try:
+            question = dns.qd[0]
+        except (TypeError, IndexError, KeyError):
+            question = dns.qd
+
+        return isinstance(question, DNSQR)
+
+    # DNS response
+    if int(dns.qr) == 1:
+        # A response should normally contain a valid question
+        # or at least one valid answer.
+        if int(dns.qdcount or 0) > 0:
+            try:
+                question = dns.qd[0]
+            except (TypeError, IndexError, KeyError):
+                question = dns.qd
+
+            if isinstance(question, DNSQR):
+                return True
+
+        if int(dns.ancount or 0) > 0:
+            try:
+                answer = dns.an[0]
+            except (TypeError, IndexError, KeyError):
+                answer = dns.an
+
+            if isinstance(answer, DNSRR):
+                return True
 
     return False
 

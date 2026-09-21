@@ -1,4 +1,4 @@
-from scapy.layers.dns import DNS
+from scapy.layers.dns import DNS, DNSQR, DNSRR
 
 
 DNS_TYPE_NAMES = {
@@ -57,13 +57,10 @@ def parse_dns(payload: bytes) -> dict:
     if int(dns.qr) == 0:
         question = get_first_record(dns.qd)
 
-        if question is None:
+        if question is None or not isinstance(question, DNSQR):
             return {
                 "protocol": "DNS",
-                "type": "query",
-                "transaction_id": int(dns.id),
-                "domain": None,
-                "query_type": None,
+                "type": "UNKNOWN",
             }
 
         query_type_number = int(question.qtype)
@@ -86,7 +83,7 @@ def parse_dns(payload: bytes) -> dict:
 
     answers = []
 
-    if answer is not None:
+    if isinstance(answer, DNSRR):
         answer_type_number = int(answer.type)
 
         rdata = answer.rdata
