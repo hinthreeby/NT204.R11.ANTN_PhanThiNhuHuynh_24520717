@@ -1,34 +1,42 @@
 from scapy.layers.inet import IP, TCP, UDP
 
 from detectors.protocol_detector import detect_application_protocol
+from parsers.dns_parser import parse_dns
 from parsers.http_parser import parse_http
 from parsers.ipv4_parser import parse_ipv4
+from parsers.smtp_parser import parse_smtp
 from parsers.tcp_parser import parse_tcp
 from parsers.udp_parser import parse_udp
-from parsers.dns_parser import parse_dns
-from parsers.smtp_parser import parse_smtp
 
 
-def process_packet(packet, packet_id: int) -> dict:
+def add_error(
+    event: dict,
+    stage: str,
+    message: str,
+) -> None:
     """
-    Convert a Scapy packet into a normalized IDS event.
-
-    This pipeline is shared by:
-    - PCAP import
-    - Live packet capture
+    Add an error entry to a normalized IDS event.
     """
 
-    timestamp = None
+    event["errors"].append(
+        {
+            "stage": stage,
+            "message": message,
+        }
+    )
 
-    if hasattr(packet, "time"):
-        try:
-            timestamp = float(packet.time)
-        except (TypeError, ValueError):
-            timestamp = None
+
+def create_base_event(
+    packet,
+    packet_id: int,
+) -> dict:
+    """
+    Create the base normalized IDS event.
+    """
 
     event = {
         "packet_id": packet_id,
-        "timestamp": timestamp,
+        "timestamp": None,
 
         "network": {
             "protocol": "UNKNOWN"
@@ -41,65 +49,229 @@ def process_packet(packet, packet_id: int) -> dict:
         "application": {
             "protocol": "UNKNOWN"
         },
+
+        "errors": [],
     }
 
+    try:
+        if hasattr(packet, "time"):
+            event["timestamp"] = float(packet.time)
+
+    except Exception as exc:
+        add_error(
+            event,
+            "timestamp",
+            f"{type(exc).__name__}: {exc}",
+        )
+
+    return event
+
+
+def process_packet(
+    packet,
+    packet_id: int,
+) -> dict:
+    """
+    Convert a Scapy packet into a normalized IDS event.
+
+    The function is designed to avoid crashing when a packet
+    is malformed, incomplete, or uses an unsupported protocol.
+
+    This pipeline is shared by:
+    - PCAP import
+    - Live packet capture
+    """
+
+    event = create_base_event(
+        packet,
+        packet_id,
+    )
+
     # Network layer
-    
-    if IP not in packet:
+    try:
+        if IP not in packet:
+            add_error(
+                event,
+                "network",
+                "Unsupported or missing IPv4 header",
+            )
+
+            return event
+
+        event["network"] = parse_ipv4(
+            packet[IP]
+        )
+
+    except Exception as exc:
+        add_error(
+            event,
+            "network",
+            f"{type(exc).__name__}: {exc}",
+        )
+
         return event
 
-    event["network"] = parse_ipv4(packet[IP])
-
-    # Transport layer
-
+    # TCP
     if TCP in packet:
         tcp_layer = packet[TCP]
 
-        event["transport"] = parse_tcp(tcp_layer)
+        try:
+            event["transport"] = parse_tcp(
+                tcp_layer
+            )
 
-        payload = bytes(tcp_layer.payload)
+        except Exception as exc:
+            add_error(
+                event,
+                "transport",
+                f"{type(exc).__name__}: {exc}",
+            )
 
-        # Application detection
+            return event
 
-        application_protocol = detect_application_protocol(
-            transport_protocol="TCP",
-            src_port=tcp_layer.sport,
-            dst_port=tcp_layer.dport,
-            payload=payload,
-        )
+        try:
+            payload = bytes(
+                tcp_layer.payload
+            )
 
-        # Application parsing
-        if application_protocol == "HTTP":
-            event["application"] = parse_http(payload)
+        except Exception as exc:
+            add_error(
+                event,
+                "payload",
+                f"{type(exc).__name__}: {exc}",
+            )
 
-        elif application_protocol == "SMTP":
-            event["application"] = parse_smtp(payload)
+            return event
 
-        else:
+        # Empty TCP payload is valid.
+        # For example, SYN and ACK packets may not carry data.
+        if not payload:
+            return event
+
+        try:
+            application_protocol = (
+                detect_application_protocol(
+                    transport_protocol="TCP",
+                    src_port=tcp_layer.sport,
+                    dst_port=tcp_layer.dport,
+                    payload=payload,
+                )
+            )
+
+        except Exception as exc:
+            add_error(
+                event,
+                "application_detection",
+                f"{type(exc).__name__}: {exc}",
+            )
+
+            return event
+
+        try:
+            if application_protocol == "HTTP":
+                event["application"] = parse_http(
+                    payload
+                )
+
+            elif application_protocol == "SMTP":
+                event["application"] = parse_smtp(
+                    payload
+                )
+
+        except Exception as exc:
             event["application"] = {
-                "protocol": "UNKNOWN"
+                "protocol": application_protocol,
+                "type": "UNKNOWN",
             }
 
-    elif UDP in packet:
+            add_error(
+                event,
+                "application_parser",
+                f"{type(exc).__name__}: {exc}",
+            )
+
+        return event
+
+    # UDP
+    if UDP in packet:
         udp_layer = packet[UDP]
 
-        event["transport"] = parse_udp(udp_layer)
+        try:
+            event["transport"] = parse_udp(
+                udp_layer
+            )
 
-        payload = bytes(udp_layer.payload)
+        except Exception as exc:
+            add_error(
+                event,
+                "transport",
+                f"{type(exc).__name__}: {exc}",
+            )
 
-        application_protocol = detect_application_protocol(
-            transport_protocol="UDP",
-            src_port=udp_layer.sport,
-            dst_port=udp_layer.dport,
-            payload=payload,
-        )
+            return event
 
-        if application_protocol == "DNS":
-            event["application"] = parse_dns(payload)
+        try:
+            payload = bytes(
+                udp_layer.payload
+            )
 
-        else:
+        except Exception as exc:
+            add_error(
+                event,
+                "payload",
+                f"{type(exc).__name__}: {exc}",
+            )
+
+            return event
+
+        # Empty UDP payload should not crash the parser.
+        if not payload:
+            return event
+
+        try:
+            application_protocol = (
+                detect_application_protocol(
+                    transport_protocol="UDP",
+                    src_port=udp_layer.sport,
+                    dst_port=udp_layer.dport,
+                    payload=payload,
+                )
+            )
+
+        except Exception as exc:
+            add_error(
+                event,
+                "application_detection",
+                f"{type(exc).__name__}: {exc}",
+            )
+
+            return event
+
+        try:
+            if application_protocol == "DNS":
+                event["application"] = parse_dns(
+                    payload
+                )
+
+        except Exception as exc:
             event["application"] = {
-                "protocol": "UNKNOWN"
+                "protocol": application_protocol,
+                "type": "UNKNOWN",
             }
+
+            add_error(
+                event,
+                "application_parser",
+                f"{type(exc).__name__}: {exc}",
+            )
+
+        return event
+
+    # Unsupported transport
+    add_error(
+        event,
+        "transport",
+        "Unsupported or missing TCP/UDP layer",
+    )
 
     return event
