@@ -73,6 +73,19 @@ def detect_application_protocol(
         # HTTP on non-standard ports.
         if is_http_payload(payload):
             return "HTTP"
+        
+        uses_standard_smtp_port = (
+            src_port in SMTP_STANDARD_PORTS
+            or dst_port in SMTP_STANDARD_PORTS
+        )
+
+        if uses_standard_smtp_port and is_smtp_payload(payload):
+            return "SMTP"
+
+        # Payload-based detection also allows SMTP
+        # on non-standard ports.
+        if is_smtp_payload(payload):
+            return "SMTP"
 
     # UDP application protocols
     elif transport_protocol == "UDP":
