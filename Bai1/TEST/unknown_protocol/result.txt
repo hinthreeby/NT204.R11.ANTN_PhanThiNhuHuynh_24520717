@@ -1,0 +1,33 @@
+[PCAP MODE] Reading packets from: TEST\unknown_protocol\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1790006170.175777,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 28,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 1,
+    "checksum": 63345,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "UNKNOWN"
+  },
+  "application": {
+    "protocol": "UNKNOWN"
+  },
+  "errors": [
+    {
+      "stage": "transport",
+      "message": "Unsupported or missing TCP/UDP layer"
+    }
+  ]
+}
+[PCAP MODE] Processed 1 packets.
