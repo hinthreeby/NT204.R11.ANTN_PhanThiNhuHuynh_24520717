@@ -1,0 +1,125 @@
+[PCAP MODE] Reading packets from: TEST\smtp_command\input.pcap
+{
+  "packet_id": 1,
+  "timestamp": 1789997671.45433,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 65,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63303,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 25,
+    "sequence": 0,
+    "acknowledgment": 0,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 55772,
+    "urgent_pointer": 0,
+    "payload_length": 25
+  },
+  "application": {
+    "protocol": "SMTP",
+    "type": "command",
+    "command": "EHLO",
+    "argument": "client.example.com"
+  }
+}
+{
+  "packet_id": 2,
+  "timestamp": 1789997671.455356,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 71,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63297,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 25,
+    "sequence": 0,
+    "acknowledgment": 0,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 28109,
+    "urgent_pointer": 0,
+    "payload_length": 31
+  },
+  "application": {
+    "protocol": "SMTP",
+    "type": "command",
+    "command": "MAIL FROM",
+    "argument": "<alice@example.com>"
+  }
+}
+{
+  "packet_id": 3,
+  "timestamp": 1789997671.455356,
+  "network": {
+    "protocol": "IPv4",
+    "version": 4,
+    "header_length": 5,
+    "tos": 0,
+    "total_length": 67,
+    "id": 1,
+    "flags": "",
+    "fragment_offset": 0,
+    "ttl": 64,
+    "next_protocol": 6,
+    "checksum": 63301,
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20"
+  },
+  "transport": {
+    "protocol": "TCP",
+    "src_port": 50000,
+    "dst_port": 25,
+    "sequence": 0,
+    "acknowledgment": 0,
+    "data_offset": 5,
+    "flags": [
+      "PSH",
+      "ACK"
+    ],
+    "window": 8192,
+    "checksum": 4724,
+    "urgent_pointer": 0,
+    "payload_length": 27
+  },
+  "application": {
+    "protocol": "SMTP",
+    "type": "command",
+    "command": "RCPT TO",
+    "argument": "<bob@example.com>"
+  }
+}
+[PCAP MODE] Processed 3 packets.
