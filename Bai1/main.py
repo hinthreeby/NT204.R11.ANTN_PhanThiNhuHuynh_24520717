@@ -45,7 +45,10 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.interface:
-        capture_live(args.interface)
+        capture_live(
+            args.interface,
+            args.output,
+        )
 
     elif args.pcap:
         read_pcap(

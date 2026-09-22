@@ -12,9 +12,6 @@ def read_pcap(
 ) -> None:
     """
     Read packets from a PCAP file.
-
-    Every packet is sent through the common parsing pipeline
-    and written to a JSON Lines output file.
     """
 
     print(

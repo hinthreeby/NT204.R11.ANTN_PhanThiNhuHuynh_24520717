@@ -49,10 +49,6 @@ def detect_application_protocol(
     """
     Detect application protocol using transport information,
     ports, and payload signatures.
-
-    Currently supported:
-    - HTTP/1.x
-    - DNS
     """
 
     if not payload:
