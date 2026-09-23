@@ -24,4 +24,4 @@ Các testcase nằm trong thư mục TEST, bao gồm:
 
 ## Sử dụng AI
 - Công cụ: ChatGPT
-- Mục đích: hỗ trợ thiết kế cấu trúc project, tìm lỗi
+- Mục đích: hỗ trợ phân tích yêu cầu, tham khảo hướng triển khai, giải thích các vấn đề kỹ thuật, kiểm tra và tìm lỗi trong quá trình thực hiện bài tập.
