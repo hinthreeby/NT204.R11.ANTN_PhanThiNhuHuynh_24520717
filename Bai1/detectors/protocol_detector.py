@@ -83,7 +83,6 @@ def detect_application_protocol(
         if is_smtp_payload(payload):
             return "SMTP"
 
-    # UDP application protocols
     elif transport_protocol == "UDP":
         uses_standard_dns_port = (
             src_port in DNS_STANDARD_PORTS
@@ -91,6 +90,11 @@ def detect_application_protocol(
         )
 
         if uses_standard_dns_port and is_dns_payload(payload):
+            return "DNS"
+
+        # Payload-based detection also supports
+        # DNS on non-standard ports.
+        if is_dns_payload(payload):
             return "DNS"
 
     return "UNKNOWN"
