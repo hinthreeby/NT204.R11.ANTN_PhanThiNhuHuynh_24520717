@@ -1,8 +1,13 @@
 from copy import deepcopy
 
 from config import Bai2Config
+
 from decoder.http_decoder import (
     decode_http_application,
+)
+
+from decoder.smtp_decoder import (
+    decode_smtp_application,
 )
 
 
@@ -25,7 +30,9 @@ class Decoder:
         Decode one normalized IDS event.
         """
 
-        decoded_event = deepcopy(event)
+        decoded_event = deepcopy(
+            event
+        )
 
         decoded_event["decoder"] = {
             "status": "unchanged",
@@ -98,13 +105,72 @@ class Decoder:
 
                 decoded_event[
                     "application"
-                ]["decode_status"] = "partial"
+                ][
+                    "decode_status"
+                ] = "partial"
 
                 decoded_event[
                     "application"
-                ]["decode_reason"] = (
-                    error_message
+                ][
+                    "decode_reason"
+                ] = error_message
+
+                decoded_event["decoder"] = {
+                    "status": "partial",
+                    "reason": error_message,
+                }
+
+        # SMTP
+        elif protocol == "SMTP":
+            try:
+                decoded_application = (
+                    decode_smtp_application(
+                        application,
+                        self.config.max_decode_size,
+                    )
                 )
+
+                decoded_event[
+                    "application"
+                ] = decoded_application
+
+                decoded_event["decoder"] = {
+                    "status": (
+                        decoded_application.get(
+                            "decode_status",
+                            "success",
+                        )
+                    ),
+                    "reason": (
+                        decoded_application.get(
+                            "decode_reason"
+                        )
+                    ),
+                }
+
+            except Exception as exc:
+                error_message = (
+                    f"{type(exc).__name__}: "
+                    f"{exc}"
+                )
+
+                decoded_event[
+                    "application"
+                ] = deepcopy(
+                    application
+                )
+
+                decoded_event[
+                    "application"
+                ][
+                    "decode_status"
+                ] = "partial"
+
+                decoded_event[
+                    "application"
+                ][
+                    "decode_reason"
+                ] = error_message
 
                 decoded_event["decoder"] = {
                     "status": "partial",
