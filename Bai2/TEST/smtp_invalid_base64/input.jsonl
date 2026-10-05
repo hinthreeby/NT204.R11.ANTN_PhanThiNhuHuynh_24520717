@@ -1,0 +1,1 @@
+{"packet_id":1,"timestamp":1790000102.0,"network":{"protocol":"IPv4","src_ip":"192.168.1.10","dst_ip":"192.168.1.20"},"transport":{"protocol":"TCP","src_port":50000,"dst_port":25},"application":{"protocol":"SMTP","type":"data","headers":{"Content-Transfer-Encoding":"base64"},"body":"THIS-IS-NOT-VALID-BASE64!!!"},"errors":[]}

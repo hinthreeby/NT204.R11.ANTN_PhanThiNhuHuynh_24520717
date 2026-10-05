@@ -1,0 +1,3 @@
+[Bai2] Processed events: 1
+[Bai2] Skipped events: 0
+[OUTPUT] JSONL file: TEST\smtp_invalid_base64\events.jsonl
