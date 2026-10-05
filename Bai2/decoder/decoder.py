@@ -25,9 +25,7 @@ class Decoder:
         Decode one normalized IDS event.
         """
 
-        decoded_event = deepcopy(
-            event
-        )
+        decoded_event = deepcopy(event)
 
         decoded_event["decoder"] = {
             "status": "unchanged",
@@ -59,7 +57,6 @@ class Decoder:
             )
         ).upper()
 
-
         # HTTP
         if protocol == "HTTP":
             try:
@@ -88,12 +85,30 @@ class Decoder:
                 }
 
             except Exception as exc:
+                error_message = (
+                    f"{type(exc).__name__}: "
+                    f"{exc}"
+                )
+
+                decoded_event[
+                    "application"
+                ] = deepcopy(
+                    application
+                )
+
+                decoded_event[
+                    "application"
+                ]["decode_status"] = "partial"
+
+                decoded_event[
+                    "application"
+                ]["decode_reason"] = (
+                    error_message
+                )
+
                 decoded_event["decoder"] = {
                     "status": "partial",
-                    "reason": (
-                        f"{type(exc).__name__}: "
-                        f"{exc}"
-                    ),
+                    "reason": error_message,
                 }
 
         return decoded_event
