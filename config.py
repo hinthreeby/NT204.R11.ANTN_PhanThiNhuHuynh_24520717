@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Bai2Config:
+class IDSConfig:
     """
-    Configuration values used by the Bai2 processing pipeline.
+    Configuration values used by the IDS processing pipeline.
     """
 
     tcp_idle_timeout: float = 300.0

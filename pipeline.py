@@ -1,20 +1,28 @@
-from config import Bai2Config
+from config import IDSConfig
+
 from decoder.decoder import Decoder
 from flow.flow_tracker import FlowTracker
+from parsers.packet_parser import process_packet
 from preprocessor.preprocessor import Preprocessor
 
 
-class Bai2Pipeline:
+class IDSPipeline:
     """
-    Coordinate Decoder, Preprocessor, and Flow Tracker.
+    Coordinate the complete IDS processing pipeline.
+
+    Raw packet
+        -> Packet Parser
+        -> Decoder
+        -> Preprocessor
+        -> Flow Tracker
     """
 
     def __init__(
         self,
-        config: Bai2Config | None = None,
+        config: IDSConfig | None = None,
     ) -> None:
         if config is None:
-            config = Bai2Config()
+            config = IDSConfig()
 
         self.config = config
 
@@ -35,7 +43,7 @@ class Bai2Pipeline:
         event: dict,
     ) -> dict | None:
         """
-        Process one normalized event through the Bai2 pipeline.
+        Process one normalized IDS event.
         """
 
         try:
@@ -59,8 +67,26 @@ class Bai2Pipeline:
 
         except Exception as exc:
             print(
-                "[ERROR] Bai2 pipeline failed: "
+                "[ERROR] IDS pipeline failed: "
                 f"{type(exc).__name__}: {exc}"
             )
 
             return None
+
+    def process_packet(
+        self,
+        packet,
+        packet_id: int,
+    ) -> dict | None:
+        """
+        Parse a raw packet and continue through the IDS pipeline.
+        """
+
+        event = process_packet(
+            packet,
+            packet_id,
+        )
+
+        return self.process_event(
+            event
+        )

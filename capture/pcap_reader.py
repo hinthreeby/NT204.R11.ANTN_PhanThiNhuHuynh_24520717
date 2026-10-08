@@ -3,17 +3,16 @@ import json
 from scapy.utils import PcapReader
 
 from output.jsonl_writer import JSONLWriter
-from parsers.packet_parser import process_packet
 
 
 def read_pcap(
     file_path: str,
     output_path: str,
+    packet_processor,
 ) -> None:
     """
     Read packets from a PCAP file.
     """
-
     print(
         f"[PCAP MODE] Reading packets from: "
         f"{file_path}"
@@ -30,7 +29,7 @@ def read_pcap(
                     pcap_reader,
                     start=1,
                 ):
-                    event = process_packet(
+                    event = packet_processor(
                         packet,
                         packet_id,
                     )

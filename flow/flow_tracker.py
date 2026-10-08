@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from config import Bai2Config
+from config import IDSConfig
 
 
 class FlowTracker:
@@ -12,7 +12,7 @@ class FlowTracker:
 
     def __init__(
         self,
-        config: Bai2Config,
+        config: IDSConfig,
     ) -> None:
         self.config = config
 

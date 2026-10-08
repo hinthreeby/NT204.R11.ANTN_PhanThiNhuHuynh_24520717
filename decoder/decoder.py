@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from config import Bai2Config
+from config import IDSConfig
 
 from decoder.http_decoder import (
     decode_http_application,
@@ -18,7 +18,7 @@ class Decoder:
 
     def __init__(
         self,
-        config: Bai2Config,
+        config: IDSConfig,
     ) -> None:
         self.config = config
 

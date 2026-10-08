@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from config import Bai2Config
+from config import IDSConfig
 
 
 class Preprocessor:
@@ -13,7 +13,7 @@ class Preprocessor:
 
     def __init__(
         self,
-        config: Bai2Config,
+        config: IDSConfig,
     ) -> None:
         self.config = config
 

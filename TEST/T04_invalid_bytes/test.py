@@ -1,6 +1,6 @@
 import json
 
-from config import Bai2Config
+from config import IDSConfig
 from decoder.decoder import Decoder
 
 
@@ -34,7 +34,7 @@ event = {
 
 
 decoder = Decoder(
-    Bai2Config()
+    IDSConfig()
 )
 
 

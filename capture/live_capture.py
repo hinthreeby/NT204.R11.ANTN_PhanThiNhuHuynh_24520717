@@ -4,12 +4,12 @@ from scapy.layers.inet import IP
 from scapy.sendrecv import sniff
 
 from output.jsonl_writer import JSONLWriter
-from parsers.packet_parser import process_packet
 
 
 def capture_live(
     interface: str,
     output_path: str,
+    packet_processor,
 ) -> None:
     """
     Capture IPv4 packets from a network interface.
@@ -38,7 +38,7 @@ def capture_live(
 
                 packet_count += 1
 
-                event = process_packet(
+                event = packet_processor(
                     packet,
                     packet_count,
                 )

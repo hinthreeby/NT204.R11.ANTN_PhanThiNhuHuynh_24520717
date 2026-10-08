@@ -2,52 +2,62 @@ import argparse
 import json
 from pathlib import Path
 
-from pipeline import Bai2Pipeline
+from capture.live_capture import capture_live
+from capture.pcap_reader import read_pcap
+from pipeline import IDSPipeline
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
     """
-    Build the command-line interface for Bai2.
+    Build the command-line interface for the IDS pipeline.
     """
 
     parser = argparse.ArgumentParser(
-        description=(
-            "Decoder, Preprocessor, "
-            "and Flow/Connection Tracker"
-        )
+        description="IDS processing pipeline"
     )
 
-    parser.add_argument(
+    input_group = parser.add_mutually_exclusive_group(
+        required=True
+    )
+
+    input_group.add_argument(
+        "--pcap",
+        help="Path to a PCAP file",
+    )
+
+    input_group.add_argument(
+        "--interface",
+        help="Network interface for live capture",
+    )
+
+    input_group.add_argument(
+        "--events",
         "--input",
-        required=True,
+        dest="events",
         help=(
-            "Path to a JSONL file containing "
-            "normalized events from Bai1"
+            "Path to normalized JSONL events "
+            "for direct module testing"
         ),
     )
 
     parser.add_argument(
         "--output",
         default="output/events.jsonl",
-        help=(
-            "Path to the processed JSONL output "
-            "(default: output/events.jsonl)"
-        ),
+        help="Path to JSONL output file",
     )
 
     return parser
 
 
-def process_jsonl(
+def process_event_file(
     input_path: str,
     output_path: str,
+    pipeline: IDSPipeline,
 ) -> None:
     """
-    Read normalized Bai1 events from JSONL and process
-    them through the Bai2 pipeline.
+    Process normalized JSONL events through Decoder,
+    Preprocessor, and Flow Tracker.
     """
-
-    pipeline = Bai2Pipeline()
 
     input_file = Path(input_path)
     output_file = Path(output_path)
@@ -62,12 +72,12 @@ def process_jsonl(
 
     try:
         with input_file.open(
-            mode="r",
+            "r",
             encoding="utf-8",
         ) as source:
 
             with output_file.open(
-                mode="w",
+                "w",
                 encoding="utf-8",
             ) as destination:
 
@@ -122,18 +132,13 @@ def process_jsonl(
         return
 
     print(
-        f"[Bai2] Processed events: "
+        f"[IDS] Processed events: "
         f"{processed_count}"
     )
 
     print(
-        f"[Bai2] Skipped events: "
+        f"[IDS] Skipped events: "
         f"{skipped_count}"
-    )
-
-    print(
-        f"[OUTPUT] JSONL file: "
-        f"{output_path}"
     )
 
 
@@ -142,10 +147,28 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    process_jsonl(
-        input_path=args.input,
-        output_path=args.output,
-    )
+    pipeline = IDSPipeline()
+
+    if args.pcap:
+        read_pcap(
+            args.pcap,
+            args.output,
+            pipeline.process_packet,
+        )
+
+    elif args.interface:
+        capture_live(
+            args.interface,
+            args.output,
+            pipeline.process_packet,
+        )
+
+    elif args.events:
+        process_event_file(
+            args.events,
+            args.output,
+            pipeline,
+        )
 
 
 if __name__ == "__main__":
