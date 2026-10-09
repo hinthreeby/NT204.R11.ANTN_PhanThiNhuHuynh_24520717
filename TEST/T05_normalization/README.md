@@ -28,14 +28,17 @@ python TEST/T05_normalization/validate.py
 - Port string được chuyển thành integer.
 - Timestamp được chuẩn hóa thành số.
 - preprocess_status = valid
+
 ## Kết quả thực tế
 - Trạng thái: PASS
 - Hai event đều được chuẩn hóa thành representation nhất quán.
 - Validator trả về T05 PASS.
+
 ## Minh chứng
 - input.jsonl
 - events.jsonl
 - validate.py
 - result.txt
+
 ## Kết luận
 Testcase PASS, Preprocessor chuẩn hóa đúng các field được yêu cầ
