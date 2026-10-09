@@ -24,7 +24,7 @@ Feature Extractor / Detection Engine (các phần tiếp theo)
 - `parsers/`: parser IPv4, TCP, UDP, HTTP, DNS và SMTP.
 - `detectors/`: nhận diện application protocol dựa trên port và payload.
 - `decoder/`: HTTP URL/form/HTML decoding, character decoding và SMTP/MIME decoding.
-- `preprocessor/`: validation/normalization; sẽ tiếp tục được hoàn thiện ở các bước sau.
+- `preprocessor/`: validation, normalization, xử lý missing/unsupported data và bổ sung preprocessing metadata.
 - `flow/`: Flow/Connection Tracker; sẽ tiếp tục được hoàn thiện ở các bước sau.
 - `output/`: ghi JSON Lines.
 - `TEST/`: input, output, script và báo cáo ngắn của từng testcase.
