@@ -25,7 +25,7 @@ Feature Extractor / Detection Engine (các phần tiếp theo)
 - `detectors/`: nhận diện application protocol dựa trên port và payload.
 - `decoder/`: HTTP URL/form/HTML decoding, character decoding và SMTP/MIME decoding.
 - `preprocessor/`: validation, normalization, xử lý missing/unsupported data và bổ sung preprocessing metadata.
-- `flow/`: Flow/Connection Tracker; sẽ tiếp tục được hoàn thiện ở các bước sau.
+- `flow/`: bidirectional Flow/Connection Tracker, stable `flow_id`, endpoint A/B, direction và active-flow table.
 - `output/`: ghi JSON Lines.
 - `TEST/`: input, output, script và báo cáo ngắn của từng testcase.
 
