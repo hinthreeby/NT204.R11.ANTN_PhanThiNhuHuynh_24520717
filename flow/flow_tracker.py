@@ -238,6 +238,18 @@ class FlowTracker:
             dst_port=dst_port,
         )
 
+        # TCP connection state
+        if protocol == "TCP":
+            flags = transport.get(
+                "flags",
+                [],
+            )
+
+            flow.update_tcp_state(
+                flags=flags,
+                direction=direction,
+            )
+
         result["flow"] = (
             flow.to_event_metadata(
                 direction
