@@ -62,4 +62,3 @@ python main.py --input TEST\T01_http_url_decode\input.jsonl --output output\even
 - **Công cụ:** ChatGPT.
 - **Mục đích:** hỗ trợ phân tích yêu cầu, tham khảo hướng triển khai, giải thích kỹ thuật, kiểm tra lỗi và xây dựng testcase/tài liệu.
 - **Phạm vi:** một số phần trong quá trình thiết kế kiến trúc module, xử lý packet/event, decoder, kiểm thử, debugging và tài liệu được thực hiện với sự hỗ trợ tham khảo từ AI.
-- Toàn bộ mã nguồn và kết quả kiểm thử cần được người thực hiện kiểm tra, hiểu và có khả năng giải thích khi vấn đáp.
