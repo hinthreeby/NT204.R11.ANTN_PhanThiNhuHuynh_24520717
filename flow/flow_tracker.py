@@ -159,9 +159,7 @@ class FlowTracker:
 
             return result
 
-        # -------------------------
         # Bidirectional flow key
-        # -------------------------
 
         flow_key = build_flow_key(
             src_ip=src_ip,
@@ -175,10 +173,7 @@ class FlowTracker:
             flow_key
         )
 
-        # -------------------------
         # Application protocol
-        # -------------------------
-
         application_protocol = (
             "UNKNOWN"
         )
@@ -194,10 +189,7 @@ class FlowTracker:
                 )
             ).upper()
 
-        # -------------------------
         # Create new flow
-        # -------------------------
-
         if flow is None:
             flow = Flow(
                 flow_id=create_flow_id(
@@ -227,10 +219,7 @@ class FlowTracker:
                 flow_key
             ] = flow
 
-        # -------------------------
         # Existing flow
-        # -------------------------
-
         else:
             flow.last_seen = max(
                 flow.last_seen,
@@ -241,10 +230,7 @@ class FlowTracker:
                 application_protocol
             )
 
-        # -------------------------
         # Direction
-        # -------------------------
-
         direction = flow.get_direction(
             src_ip=src_ip,
             src_port=src_port,
