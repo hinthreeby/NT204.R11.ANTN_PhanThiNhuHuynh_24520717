@@ -57,6 +57,14 @@ class IDSPipeline:
                 )
             )
 
+            if (
+                preprocessed_event.get(
+                    "processing_action"
+                )
+                == "skip"
+            ):
+                return None
+
             tracked_event = (
                 self.flow_tracker.process(
                     preprocessed_event
