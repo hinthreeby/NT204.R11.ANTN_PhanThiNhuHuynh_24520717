@@ -221,11 +221,6 @@ class FlowTracker:
 
         # Existing flow
         else:
-            flow.last_seen = max(
-                flow.last_seen,
-                timestamp,
-            )
-
             flow.update_application_protocol(
                 application_protocol
             )
@@ -238,17 +233,31 @@ class FlowTracker:
             dst_port=dst_port,
         )
 
+        flags = transport.get(
+            "flags",
+            [],
+        )
+
         # TCP connection state
         if protocol == "TCP":
-            flags = transport.get(
-                "flags",
-                [],
-            )
-
             flow.update_tcp_state(
                 flags=flags,
                 direction=direction,
             )
+
+        # Flow statistics
+        packet_size = (
+            self._get_packet_size(
+                result
+            )
+        )
+
+        flow.update_statistics(
+            packet_size=packet_size,
+            flags=flags,
+            direction=direction,
+            timestamp=timestamp,
+        )
 
         result["flow"] = (
             flow.to_event_metadata(
@@ -257,3 +266,139 @@ class FlowTracker:
         )
 
         return result
+
+    def _get_packet_size(
+        self,
+        event: dict,
+    ) -> int:
+        """
+        Get packet size from normalized event data.
+
+        Prefer IPv4 total length and fall back to
+        transport payload length when necessary.
+        """
+
+        network = event.get(
+            "network",
+            {}
+        )
+
+        if isinstance(network, dict):
+            for field_name in (
+                "len",
+                "length",
+                "packet_length",
+            ):
+                value = network.get(
+                    field_name
+                )
+
+                if value is None:
+                    continue
+
+                try:
+                    size = int(value)
+
+                except (
+                    TypeError,
+                    ValueError,
+                ):
+                    continue
+
+                if size >= 0:
+                    return size
+
+        transport = event.get(
+            "transport",
+            {}
+        )
+
+        if isinstance(
+            transport,
+            dict,
+        ):
+            try:
+                payload_length = int(
+                    transport.get(
+                        "payload_length",
+                        0,
+                    )
+                )
+
+            except (
+                TypeError,
+                ValueError,
+            ):
+                payload_length = 0
+
+            return max(
+                payload_length,
+                0,
+            )
+
+        return 0
+
+    def _get_idle_timeout(
+        self,
+        flow: Flow,
+    ) -> float:
+        """
+        Return the configured idle timeout for a flow.
+        """
+
+        if flow.protocol == "TCP":
+            return (
+                self.config
+                .tcp_idle_timeout
+            )
+
+        return (
+            self.config
+            .udp_idle_timeout
+        )
+
+    def expire_idle_flows(
+        self,
+        current_time: float,
+    ) -> list[dict]:
+        """
+        Expire flows whose idle time exceeds
+        the configured timeout.
+        """
+
+        expired_flows = []
+        expired_keys = []
+
+        for (
+            flow_key,
+            flow,
+        ) in self.active_flows.items():
+
+            timeout = (
+                self._get_idle_timeout(
+                    flow
+                )
+            )
+
+            idle_time = (
+                current_time
+                - flow.last_seen
+            )
+
+            if idle_time > timeout:
+                expired_flows.append(
+                    flow.to_expired_summary(
+                        "idle_timeout"
+                    )
+                )
+
+                expired_keys.append(
+                    flow_key
+                )
+
+        for flow_key in expired_keys:
+            del self.active_flows[
+                flow_key
+            ]
+
+        return expired_flows
