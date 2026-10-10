@@ -97,6 +97,21 @@ class Flow:
     fin_forward_seen: bool = False
     fin_backward_seen: bool = False
 
+    # Flow statistics
+    packet_count: int = 0
+    byte_count: int = 0
+
+    forward_packet_count: int = 0
+    forward_byte_count: int = 0
+
+    backward_packet_count: int = 0
+    backward_byte_count: int = 0
+
+    syn_count: int = 0
+    ack_count: int = 0
+    fin_count: int = 0
+    rst_count: int = 0
+
     def __post_init__(
         self,
     ) -> None:
@@ -294,33 +309,189 @@ class Flow:
 
     def to_event_metadata(
         self,
-        direction: str,
+        direction: str | None,
     ) -> dict:
         """
-        Build JSON-compatible flow metadata for an event.
+        Build JSON-compatible flow metadata.
         """
 
         return {
             "tracked": True,
             "flow_id": self.flow_id,
             "direction": direction,
+
             "protocol": self.protocol,
+
             "application_protocol": (
                 self.application_protocol
             ),
+
             "endpoint_a": {
                 "ip": self.endpoint_a_ip,
                 "port": self.endpoint_a_port,
             },
+
             "endpoint_b": {
                 "ip": self.endpoint_b_ip,
                 "port": self.endpoint_b_port,
             },
+
             "start_time": self.start_time,
             "last_seen": self.last_seen,
+            "duration": self.get_duration(),
+
+            "packet_count": (
+                self.packet_count
+            ),
+
+            "byte_count": (
+                self.byte_count
+            ),
+
+            "forward_packet_count": (
+                self.forward_packet_count
+            ),
+
+            "forward_byte_count": (
+                self.forward_byte_count
+            ),
+
+            "backward_packet_count": (
+                self.backward_packet_count
+            ),
+
+            "backward_byte_count": (
+                self.backward_byte_count
+            ),
+
+            "SYN_count": (
+                self.syn_count
+            ),
+
+            "ACK_count": (
+                self.ack_count
+            ),
+
+            "FIN_count": (
+                self.fin_count
+            ),
+
+            "RST_count": (
+                self.rst_count
+            ),
+
             "state": (
                 self.tcp_state
                 if self.protocol == "TCP"
                 else None
             ),
         }
+
+    def update_statistics(
+        self,
+        packet_size: int,
+        flags,
+        direction: str,
+        timestamp: float,
+    ) -> None:
+        """
+        Update packet, byte, direction, TCP flag,
+        and timing statistics for this flow.
+        """
+
+        packet_size = max(
+            int(packet_size),
+            0,
+        )
+
+        # Overall counters
+        self.packet_count += 1
+        self.byte_count += packet_size
+
+        # Direction counters
+        if direction == "forward":
+            self.forward_packet_count += 1
+            self.forward_byte_count += (
+                packet_size
+            )
+
+        elif direction == "backward":
+            self.backward_packet_count += 1
+            self.backward_byte_count += (
+                packet_size
+            )
+
+        # TCP flag counters
+        if self.protocol == "TCP":
+            if isinstance(flags, str):
+                flag_set = {
+                    flags.upper()
+                }
+
+            elif isinstance(
+                flags,
+                (list, tuple, set),
+            ):
+                flag_set = {
+                    str(flag).upper()
+                    for flag in flags
+                }
+
+            else:
+                flag_set = set()
+
+            if "SYN" in flag_set:
+                self.syn_count += 1
+
+            if "ACK" in flag_set:
+                self.ack_count += 1
+
+            if "FIN" in flag_set:
+                self.fin_count += 1
+
+            if "RST" in flag_set:
+                self.rst_count += 1
+
+        # Timing
+        self.last_seen = max(
+            self.last_seen,
+            timestamp,
+        )
+
+    def get_duration(
+        self,
+    ) -> float:
+        """
+        Return flow duration in seconds.
+        """
+
+        return max(
+            0.0,
+            self.last_seen
+            - self.start_time,
+        )
+
+    def to_expired_summary(
+        self,
+        close_reason: str,
+    ) -> dict:
+        """
+        Build a summary for an expired flow.
+        """
+
+        summary = self.to_event_metadata(
+            direction=None
+        )
+
+        summary.pop(
+            "direction",
+            None,
+        )
+
+        summary["expired"] = True
+
+        summary["close_reason"] = (
+            close_reason
+        )
+
+        return summary
