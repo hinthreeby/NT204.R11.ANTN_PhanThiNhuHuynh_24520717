@@ -42,231 +42,6 @@ class FlowTracker:
             "reason": reason,
         }
 
-    def process(
-        self,
-        event: dict,
-    ) -> dict:
-        """
-        Attach bidirectional flow metadata to one event.
-        """
-
-        result = deepcopy(
-            event
-        )
-
-        # Do not create a flow from an invalid event.
-        if (
-            result.get(
-                "preprocess_status"
-            )
-            == "invalid"
-        ):
-            result["flow"] = (
-                self._untracked_metadata(
-                    "Invalid preprocessed event"
-                )
-            )
-
-            return result
-
-        network = result.get(
-            "network"
-        )
-
-        transport = result.get(
-            "transport"
-        )
-
-        application = result.get(
-            "application"
-        )
-
-        if not isinstance(
-            network,
-            dict,
-        ):
-            result["flow"] = (
-                self._untracked_metadata(
-                    "Missing network data"
-                )
-            )
-
-            return result
-
-        if not isinstance(
-            transport,
-            dict,
-        ):
-            result["flow"] = (
-                self._untracked_metadata(
-                    "Missing transport data"
-                )
-            )
-
-            return result
-
-        protocol = str(
-            transport.get(
-                "protocol",
-                "UNKNOWN",
-            )
-        ).upper()
-
-        if (
-            protocol
-            not in TRACKED_PROTOCOLS
-        ):
-            result["flow"] = (
-                self._untracked_metadata(
-                    "Unsupported transport protocol"
-                )
-            )
-
-            return result
-
-        src_ip = network.get(
-            "src_ip"
-        )
-
-        dst_ip = network.get(
-            "dst_ip"
-        )
-
-        src_port = transport.get(
-            "src_port"
-        )
-
-        dst_port = transport.get(
-            "dst_port"
-        )
-
-        timestamp = result.get(
-            "timestamp"
-        )
-
-        if (
-            src_ip is None
-            or dst_ip is None
-            or src_port is None
-            or dst_port is None
-            or timestamp is None
-        ):
-            result["flow"] = (
-                self._untracked_metadata(
-                    "Incomplete flow key data"
-                )
-            )
-
-            return result
-
-        # Bidirectional flow key
-
-        flow_key = build_flow_key(
-            src_ip=src_ip,
-            src_port=src_port,
-            dst_ip=dst_ip,
-            dst_port=dst_port,
-            protocol=protocol,
-        )
-
-        flow = self.active_flows.get(
-            flow_key
-        )
-
-        # Application protocol
-        application_protocol = (
-            "UNKNOWN"
-        )
-
-        if isinstance(
-            application,
-            dict,
-        ):
-            application_protocol = str(
-                application.get(
-                    "protocol",
-                    "UNKNOWN",
-                )
-            ).upper()
-
-        # Create new flow
-        if flow is None:
-            flow = Flow(
-                flow_id=create_flow_id(
-                    flow_key,
-                    timestamp,
-                ),
-
-                key=flow_key,
-
-                protocol=protocol,
-
-                endpoint_a_ip=src_ip,
-                endpoint_a_port=src_port,
-
-                endpoint_b_ip=dst_ip,
-                endpoint_b_port=dst_port,
-
-                application_protocol=(
-                    application_protocol
-                ),
-
-                start_time=timestamp,
-                last_seen=timestamp,
-            )
-
-            self.active_flows[
-                flow_key
-            ] = flow
-
-        # Existing flow
-        else:
-            flow.update_application_protocol(
-                application_protocol
-            )
-
-        # Direction
-        direction = flow.get_direction(
-            src_ip=src_ip,
-            src_port=src_port,
-            dst_ip=dst_ip,
-            dst_port=dst_port,
-        )
-
-        flags = transport.get(
-            "flags",
-            [],
-        )
-
-        # TCP connection state
-        if protocol == "TCP":
-            flow.update_tcp_state(
-                flags=flags,
-                direction=direction,
-            )
-
-        # Flow statistics
-        packet_size = (
-            self._get_packet_size(
-                result
-            )
-        )
-
-        flow.update_statistics(
-            packet_size=packet_size,
-            flags=flags,
-            direction=direction,
-            timestamp=timestamp,
-        )
-
-        result["flow"] = (
-            flow.to_event_metadata(
-                direction
-            )
-        )
-
-        return result
-
     def _get_packet_size(
         self,
         event: dict,
@@ -280,10 +55,13 @@ class FlowTracker:
 
         network = event.get(
             "network",
-            {}
+            {},
         )
 
-        if isinstance(network, dict):
+        if isinstance(
+            network,
+            dict,
+        ):
             for field_name in (
                 "len",
                 "length",
@@ -297,7 +75,9 @@ class FlowTracker:
                     continue
 
                 try:
-                    size = int(value)
+                    size = int(
+                        value
+                    )
 
                 except (
                     TypeError,
@@ -310,7 +90,7 @@ class FlowTracker:
 
         transport = event.get(
             "transport",
-            {}
+            {},
         )
 
         if isinstance(
@@ -402,3 +182,281 @@ class FlowTracker:
             ]
 
         return expired_flows
+
+    def process(
+        self,
+        event: dict,
+    ) -> dict:
+        """
+        Attach bidirectional flow metadata to one event.
+        """
+
+        result = deepcopy(
+            event
+        )
+
+        # Keep output schema consistent.
+        result["expired_flows"] = []
+
+        # Do not create a flow from an invalid event.
+        if (
+            result.get(
+                "preprocess_status"
+            )
+            == "invalid"
+        ):
+            result["flow"] = (
+                self._untracked_metadata(
+                    "Invalid preprocessed event"
+                )
+            )
+
+            return result
+
+        network = result.get(
+            "network"
+        )
+
+        transport = result.get(
+            "transport"
+        )
+
+        application = result.get(
+            "application"
+        )
+
+        # -------------------------
+        # Validate network data
+        # -------------------------
+
+        if not isinstance(
+            network,
+            dict,
+        ):
+            result["flow"] = (
+                self._untracked_metadata(
+                    "Missing network data"
+                )
+            )
+
+            return result
+
+        # -------------------------
+        # Validate transport data
+        # -------------------------
+
+        if not isinstance(
+            transport,
+            dict,
+        ):
+            result["flow"] = (
+                self._untracked_metadata(
+                    "Missing transport data"
+                )
+            )
+
+            return result
+
+        protocol = str(
+            transport.get(
+                "protocol",
+                "UNKNOWN",
+            )
+        ).upper()
+
+        if (
+            protocol
+            not in TRACKED_PROTOCOLS
+        ):
+            result["flow"] = (
+                self._untracked_metadata(
+                    "Unsupported transport protocol"
+                )
+            )
+
+            return result
+
+        # -------------------------
+        # Extract flow fields
+        # -------------------------
+
+        src_ip = network.get(
+            "src_ip"
+        )
+
+        dst_ip = network.get(
+            "dst_ip"
+        )
+
+        src_port = transport.get(
+            "src_port"
+        )
+
+        dst_port = transport.get(
+            "dst_port"
+        )
+
+        timestamp = result.get(
+            "timestamp"
+        )
+
+        if (
+            src_ip is None
+            or dst_ip is None
+            or src_port is None
+            or dst_port is None
+            or timestamp is None
+        ):
+            result["flow"] = (
+                self._untracked_metadata(
+                    "Incomplete flow key data"
+                )
+            )
+
+            return result
+
+        # -------------------------
+        # Expire old idle flows
+        # -------------------------
+
+        result["expired_flows"] = (
+            self.expire_idle_flows(
+                timestamp
+            )
+        )
+
+        # -------------------------
+        # Bidirectional flow key
+        # -------------------------
+
+        flow_key = build_flow_key(
+            src_ip=src_ip,
+            src_port=src_port,
+            dst_ip=dst_ip,
+            dst_port=dst_port,
+            protocol=protocol,
+        )
+
+        flow = self.active_flows.get(
+            flow_key
+        )
+
+        # -------------------------
+        # Application protocol
+        # -------------------------
+
+        application_protocol = (
+            "UNKNOWN"
+        )
+
+        if isinstance(
+            application,
+            dict,
+        ):
+            application_protocol = str(
+                application.get(
+                    "protocol",
+                    "UNKNOWN",
+                )
+            ).upper()
+
+        # -------------------------
+        # Create new flow
+        # -------------------------
+
+        if flow is None:
+            flow = Flow(
+                flow_id=create_flow_id(
+                    flow_key,
+                    timestamp,
+                ),
+
+                key=flow_key,
+
+                protocol=protocol,
+
+                endpoint_a_ip=src_ip,
+                endpoint_a_port=src_port,
+
+                endpoint_b_ip=dst_ip,
+                endpoint_b_port=dst_port,
+
+                application_protocol=(
+                    application_protocol
+                ),
+
+                start_time=timestamp,
+                last_seen=timestamp,
+            )
+
+            self.active_flows[
+                flow_key
+            ] = flow
+
+        # -------------------------
+        # Existing flow
+        # -------------------------
+
+        else:
+            flow.update_application_protocol(
+                application_protocol
+            )
+
+        # -------------------------
+        # Direction
+        # -------------------------
+
+        direction = flow.get_direction(
+            src_ip=src_ip,
+            src_port=src_port,
+            dst_ip=dst_ip,
+            dst_port=dst_port,
+        )
+
+        # -------------------------
+        # TCP flags
+        # -------------------------
+
+        flags = transport.get(
+            "flags",
+            [],
+        )
+
+        # -------------------------
+        # TCP connection state
+        # -------------------------
+
+        if protocol == "TCP":
+            flow.update_tcp_state(
+                flags=flags,
+                direction=direction,
+            )
+
+        # -------------------------
+        # Flow statistics
+        # -------------------------
+
+        packet_size = (
+            self._get_packet_size(
+                result
+            )
+        )
+
+        flow.update_statistics(
+            packet_size=packet_size,
+            flags=flags,
+            direction=direction,
+            timestamp=timestamp,
+        )
+
+        # -------------------------
+        # Attach flow metadata
+        # -------------------------
+
+        result["flow"] = (
+            flow.to_event_metadata(
+                direction
+            )
+        )
+
+        return result
