@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow Tracker có quản lý đồng thời nhiều flow và không gộp
-nhầm các connection có endpoint/port khác nhau hay không.
+Kiểm tra Flow Tracker có quản lý đồng thời nhiều flow và không gộp nhầm các connection có endpoint/port khác nhau hay không.
 
 ## Input
 
@@ -46,5 +45,4 @@ python TEST/T11_concurrent_flows/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, active-flow table quản lý đồng thời nhiều flow
-và phân biệt đúng connection dựa trên bidirectional 5-tuple.
+Testcase PASS, active-flow table quản lý đồng thời nhiều flow và phân biệt đúng connection dựa trên bidirectional 5-tuple.

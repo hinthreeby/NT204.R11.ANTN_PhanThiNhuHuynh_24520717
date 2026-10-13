@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow Tracker có gom DNS query/response UDP hai chiều vào cùng
-một flow và cập nhật đúng packet/byte statistics hay không.
+Kiểm tra Flow Tracker có gom DNS query/response UDP hai chiều vào cùng một flow và cập nhật đúng packet/byte statistics hay không.
 
 ## Input
 

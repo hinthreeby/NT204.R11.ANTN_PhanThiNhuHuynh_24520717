@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Preprocessor có xử lý an toàn event thiếu field không bắt buộc
-và tạo representation nhất quán hay không.
+Kiểm tra Preprocessor có xử lý an toàn event thiếu field không bắt buộc và tạo representation nhất quán hay không.
 
 ## Input
 

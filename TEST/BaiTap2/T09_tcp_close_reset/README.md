@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow/Connection Tracker có cập nhật đúng trạng thái TCP khi
-connection đóng bình thường bằng FIN/ACK hoặc bị reset bằng RST hay không.
+Kiểm tra Flow/Connection Tracker có cập nhật đúng trạng thái TCP khi connection đóng bình thường bằng FIN/ACK hoặc bị reset bằng RST hay không.
 
 ## Input
 
@@ -54,5 +53,4 @@ Hai connection phải có flow_id khác nhau.
 - result.txt
 
 ## Kết luận
-Testcase PASS, Flow Tracker xử lý đúng TCP connection close
-và reset.
+Testcase PASS, Flow Tracker xử lý đúng TCP connection close và reset.

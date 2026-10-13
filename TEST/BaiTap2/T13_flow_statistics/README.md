@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow Tracker cập nhật đúng thống kê của nhiều packet hai chiều
-trong cùng một TCP flow.
+Kiểm tra Flow Tracker cập nhật đúng thống kê của nhiều packet hai chiều trong cùng một TCP flow.
 
 ## Input
 
@@ -50,5 +49,4 @@ python TEST/T13_flow_statistics/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, Flow Tracker duy trì đúng statistics của một
-bidirectional TCP flow.
+Testcase PASS, Flow Tracker duy trì đúng statistics của một bidirectional TCP flow.

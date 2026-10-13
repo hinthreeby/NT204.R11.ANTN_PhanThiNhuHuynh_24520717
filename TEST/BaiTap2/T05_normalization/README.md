@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Preprocessor có chuẩn hóa nhất quán protocol name,
-port, timestamp, HTTP header, URI và domain hay không.
+Kiểm tra Preprocessor có chuẩn hóa nhất quán protocol name, port, timestamp, HTTP header, URI và domain hay không.
 
 ## Input
 
@@ -41,4 +40,4 @@ python TEST/T05_normalization/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, Preprocessor chuẩn hóa đúng các field được yêu cầ
+Testcase PASS, Preprocessor chuẩn hóa đúng các field được yêu cầu.

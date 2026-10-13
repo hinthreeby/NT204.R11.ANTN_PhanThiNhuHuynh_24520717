@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow/Connection Tracker có theo dõi đúng quá trình TCP
-three-way handshake và chuyển flow sang trạng thái ESTABLISHED hay không.
+Kiểm tra Flow/Connection Tracker có theo dõi đúng quá trình TCP three-way handshake và chuyển flow sang trạng thái ESTABLISHED hay không.
 
 ## Input
 

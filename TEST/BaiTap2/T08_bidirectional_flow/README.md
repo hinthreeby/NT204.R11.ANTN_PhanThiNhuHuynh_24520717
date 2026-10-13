@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Flow Tracker có gom packet A→B và B→A của cùng
-bidirectional 5-tuple vào cùng một flow và xác định đúng direction hay không.
+Kiểm tra Flow Tracker có gom packet A → B và B → A của cùng bidirectional 5-tuple vào cùng một flow và xác định đúng direction hay không.
 
 ## Input
 
@@ -24,8 +23,8 @@ python TEST/T08_bidirectional_flow/validate.py
 ## Kết quả mong đợi
 - Cả hai event được track.
 - Hai event có cùng flow_id.
-- Event A→B có direction = forward.
-- Event B→A có direction = backward.
+- Event A → B có direction = forward.
+- Event B → A có direction = backward.
 - Endpoint A/B được giữ ổn định trong flow.
 
 ## Kết quả thực tế
@@ -41,5 +40,4 @@ python TEST/T08_bidirectional_flow/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, Flow Tracker nhận diện đúng một flow hai chiều
-và xác định đúng hướng packet.
+Testcase PASS, Flow Tracker nhận diện đúng một flow hai chiều và xác định đúng hướng packet.

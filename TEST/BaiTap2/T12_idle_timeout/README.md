@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra idle timeout cho cả UDP và TCP, việc xuất thông tin flow hết
-hạn và loại flow khỏi active-flow table.
+Kiểm tra idle timeout cho cả UDP và TCP, việc xuất thông tin flow hết hạn và loại flow khỏi active-flow table.
 
 ## Input
 
@@ -12,8 +11,7 @@ Cấu hình mặc định:
 - UDP idle timeout: 60 giây.
 - TCP idle timeout: 300 giây.
 
-Test tạo một UDP flow và một TCP flow, sau đó tạo các event có timestamp
-vượt quá timeout tương ứng.
+Test tạo một UDP flow và một TCP flow, sau đó tạo các event có timestamp vượt quá timeout tương ứng.
 
 ## Cách chạy
 
@@ -43,5 +41,4 @@ python TEST/T12_idle_timeout/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, idle timeout và flow expiration hoạt động đúng
-cho cả TCP và UDP.
+Testcase PASS, idle timeout và flow expiration hoạt động đúng cho cả TCP và UDP.

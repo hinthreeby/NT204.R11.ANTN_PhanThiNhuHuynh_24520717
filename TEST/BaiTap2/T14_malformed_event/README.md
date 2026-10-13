@@ -2,8 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Preprocessor có xử lý an toàn event malformed/unsupported,
-đánh dấu trạng thái và cung cấp lý do thay vì làm chương trình crash.
+Kiểm tra Preprocessor có xử lý an toàn event malformed/unsupported, đánh dấu trạng thái và cung cấp lý do thay vì làm chương trình crash.
 
 ## Input
 
@@ -42,5 +41,4 @@ python TEST/T14_malformed_event/validate.py
 - result.txt
 
 ## Kết luận
-Testcase PASS, malformed event không làm pipeline dừng và metadata
-preprocessing phản ánh đúng trạng thái lỗi.
+Testcase PASS, malformed event không làm pipeline dừng và metadata preprocessing phản ánh đúng trạng thái lỗi.
