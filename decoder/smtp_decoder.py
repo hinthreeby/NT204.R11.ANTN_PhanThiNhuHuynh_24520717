@@ -1,8 +1,10 @@
 import base64
 import binascii
 import quopri
+import re
 
 from copy import deepcopy
+from email.message import Message
 
 from decoder.character_decoder import (
     decode_character_data,
@@ -51,6 +53,9 @@ def decode_quoted_printable_body(
     Decode a Quoted-Printable MIME body.
     """
 
+    if re.search(rb"=(?![0-9a-fA-F]{2}|\r?\n)", body):
+        raise ValueError("Invalid Quoted-Printable escape")
+
     return quopri.decodestring(
         body
     )
@@ -78,6 +83,18 @@ def decode_smtp_application(
     )
 
     result["decode_reason"] = None
+
+    body = result.get("body")
+    if isinstance(body, (bytes, bytearray)):
+        result["raw_body_hex"] = bytes(body).hex()
+        result["body"] = bytes(body).decode("utf-8", errors="replace")
+    elif isinstance(body, str):
+        result["raw_body"] = body
+
+    if result.get("mime_parse_reason"):
+        result["decode_status"] = "partial"
+        result["decode_reason"] = result["mime_parse_reason"]
+        return result
 
     headers = result.get(
         "headers",
@@ -110,11 +127,7 @@ def decode_smtp_application(
         "content_transfer_encoding"
     ] = transfer_encoding
 
-    body = result.get(
-        "body"
-    )
-
-    if body is None:
+    if body is None or body == "" or body == b"":
         result["decode_status"] = (
             "partial"
         )
@@ -155,6 +168,23 @@ def decode_smtp_application(
             "Unsupported MIME body type"
         )
 
+        return result
+
+    if "raw_body_hex" in result:
+        try:
+            body_bytes = bytes.fromhex(result["raw_body_hex"])
+        except (TypeError, ValueError):
+            result["decode_status"] = "partial"
+            result["decode_reason"] = "Invalid raw_body_hex in MIME data"
+            return result
+
+    content_type = get_header_value(headers, "Content-Type")
+    mime = Message()
+    if content_type is not None:
+        mime["Content-Type"] = content_type
+    if mime.get_content_maintype() == "multipart":
+        result["decode_status"] = "partial"
+        result["decode_reason"] = "Multipart MIME decoding is not supported"
         return result
 
     # Size limit
@@ -226,6 +256,30 @@ def decode_smtp_application(
             decoded_bytes
         )
     )
+
+    charset = mime.get_content_charset()
+    if charset is not None and charset.replace("_", "-") not in {"utf-8", "utf8"}:
+        try:
+            character_result = {
+                "text": decoded_bytes.decode(charset),
+                "encoding": charset,
+                "status": "success",
+                "reason": None,
+            }
+        except LookupError:
+            character_result["status"] = "partial"
+            character_result["reason"] = f"Unsupported MIME charset: {charset}"
+        except UnicodeError as exc:
+            try:
+                replacement_text = decoded_bytes.decode(charset, errors="replace")
+            except (LookupError, UnicodeError):
+                replacement_text = character_result["text"]
+            character_result = {
+                "text": replacement_text,
+                "encoding": charset,
+                "status": "partial",
+                "reason": f"Invalid MIME charset data ({charset}): {exc}",
+            }
 
     result["decoded_body"] = (
         character_result["text"]

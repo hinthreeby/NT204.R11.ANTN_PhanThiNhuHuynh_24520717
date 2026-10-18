@@ -1,3 +1,22 @@
 [IDS] Processed events: 2
 [IDS] Skipped events: 0
+T03 packet/base64: success PASS
+T03 packet/quoted_printable: success PASS
+T03 packet/mixed_case_data: success PASS
+T03 packet/folded_header: success PASS
+T03 packet/no_encoding: unchanged PASS
+T03 packet/missing_body: partial PASS
+T03 packet/empty_body: partial PASS
+T03 packet/bad_base64: partial PASS
+T03 packet/bad_qp: partial PASS
+T03 packet/unknown_charset: partial PASS
+T03 packet/invalid_utf8: partial PASS
+T03 packet/invalid_ascii: partial PASS
+T03 packet/latin1: success PASS
+T03 packet/invalid_raw_bytes: partial PASS
+T03 packet/unsupported_encoding: unchanged PASS
+T03 packet/duplicate_headers: partial PASS
+T03 packet/multipart: partial PASS
+T03 packet/lf_only: success PASS
+T03 original normalized fixture and packet pipeline/JSONL PASS
 T03 PASS

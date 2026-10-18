@@ -1,6 +1,56 @@
+from email import policy
+from email.parser import BytesHeaderParser
+
+
+def parse_smtp_data(payload: bytes) -> dict | None:
+    """Parse a single MIME message in one payload, without stream state."""
+    first_line, separator, remainder = payload.partition(b"\n")
+    if first_line.strip().upper() == b"DATA":
+        if not separator or not remainder.strip():
+            return None
+        payload = remainder
+
+    if b"\r\n\r\n" in payload:
+        header_bytes, body_bytes = payload.split(b"\r\n\r\n", 1)
+    elif b"\n\n" in payload:
+        header_bytes, body_bytes = payload.split(b"\n\n", 1)
+    else:
+        header_bytes, body_bytes = payload, None
+
+    message = BytesHeaderParser(policy=policy.default).parsebytes(header_bytes + b"\r\n\r\n")
+    headers = {name: str(value) for name, value in message.items()}
+    mime_names = {name.lower() for name in headers}
+    if not mime_names.intersection({"mime-version", "content-type", "content-transfer-encoding"}):
+        return None
+
+    result = {"protocol": "SMTP", "type": "data", "headers": headers, "body": None}
+    if body_bytes is not None:
+        # Exclude the optional SMTP end-of-DATA line from the MIME body.
+        if body_bytes == b".\r\n" or body_bytes == b".\n":
+            body_bytes = b""
+        elif body_bytes.endswith(b"\r\n.\r\n"):
+            body_bytes = body_bytes[:-5]
+        elif body_bytes.endswith(b"\n.\n"):
+            body_bytes = body_bytes[:-3]
+        result["body"] = body_bytes.decode("utf-8", errors="replace")
+        try:
+            body_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            result["raw_body_hex"] = body_bytes.hex()
+
+    if message.get_content_maintype() == "multipart":
+        result["mime_parse_reason"] = "Multipart MIME decoding is not supported"
+    elif message.defects or any(
+        len(message.get_all(name, [])) > 1
+        for name in ("Content-Type", "Content-Transfer-Encoding")
+    ):
+        result["mime_parse_reason"] = "Malformed or duplicate MIME headers"
+    return result
+
+
 def parse_smtp(payload: bytes) -> dict:
     """
-    Parse an SMTP command or response.
+    Parse SMTP commands/responses or a complete single-payload MIME message.
     """
 
     text = payload.decode(
@@ -18,6 +68,13 @@ def parse_smtp(payload: bytes) -> dict:
 
     first_line = lines[0].strip()
     upper_line = first_line.upper()
+
+    data = parse_smtp_data(payload)
+    if data is not None:
+        return data
+
+    if upper_line == "DATA":
+        return {"protocol": "SMTP", "type": "command", "command": "DATA", "argument": ""}
 
 
     # SMTP Response

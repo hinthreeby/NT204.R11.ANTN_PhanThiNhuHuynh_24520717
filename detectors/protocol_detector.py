@@ -1,4 +1,5 @@
 from scapy.layers.dns import DNS, DNSQR, DNSRR
+from parsers.smtp_parser import parse_smtp_data
 HTTP_METHODS = (
     b"GET ",
     b"POST ",
@@ -153,7 +154,7 @@ def is_smtp_payload(payload: bytes) -> bool:
     Check whether a TCP payload looks like SMTP.
     """
 
-    if not payload:
+    if not payload or not payload.splitlines():
         return False
 
     first_line = payload.splitlines()[0].strip()
@@ -187,4 +188,4 @@ def is_smtp_payload(payload: bytes) -> bool:
         if first_line[3:4] in (b" ", b"-"):
             return True
 
-    return False
+    return parse_smtp_data(payload) is not None
