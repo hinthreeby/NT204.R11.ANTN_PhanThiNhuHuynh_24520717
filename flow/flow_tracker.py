@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 
 from config import IDSConfig
 from flow.flow import (
@@ -151,14 +152,32 @@ class FlowTracker:
             .udp_idle_timeout
         )
 
+    @staticmethod
+    def _normalize_time(value) -> float | None:
+        """Accept finite, non-negative capture times; reject invalid clocks."""
+        if isinstance(value, bool):
+            return None
+        try:
+            timestamp = float(value)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        return timestamp if math.isfinite(timestamp) and timestamp >= 0 else None
+
     def expire_idle_flows(
         self,
         current_time: float,
     ) -> list[dict]:
         """
-        Expire flows whose idle time exceeds
-        the configured timeout.
+        Return and remove flows idle strictly longer than their timeout.
+
+        The caller supplies capture time (or a compatible clock); no packet,
+        flow key or EOF flush is required. Invalid times do not change state.
+        Summaries retain packet timing, not the time this method was called.
         """
+
+        current_time = self._normalize_time(current_time)
+        if current_time is None:
+            return []
 
         expired_flows = []
         expired_keys = []
@@ -209,12 +228,13 @@ class FlowTracker:
         Attach bidirectional flow metadata to one event.
         """
 
-        result = deepcopy(
-            event
-        )
+        result = deepcopy(event) if isinstance(event, dict) else {}
 
         # Keep output schema consistent.
-        result["expired_flows"] = []
+        timestamp = self._normalize_time(result.get("timestamp"))
+        result["expired_flows"] = self.expire_idle_flows(timestamp)
+        if timestamp is not None:
+            result["timestamp"] = timestamp
 
         # Do not create a flow from an invalid event.
         if (
@@ -222,6 +242,7 @@ class FlowTracker:
                 "preprocess_status"
             )
             == "invalid"
+            or result.get("processing_action") == "skip"
         ):
             result["flow"] = (
                 self._untracked_metadata(
@@ -314,10 +335,6 @@ class FlowTracker:
             "dst_port"
         )
 
-        timestamp = result.get(
-            "timestamp"
-        )
-
         if (
             src_ip is None
             or dst_ip is None
@@ -333,15 +350,14 @@ class FlowTracker:
 
             return result
 
-        # -------------------------
-        # Expire old idle flows
-        # -------------------------
-
-        result["expired_flows"] = (
-            self.expire_idle_flows(
-                timestamp
-            )
-        )
+        if (
+            not isinstance(src_ip, str)
+            or not isinstance(dst_ip, str)
+            or any(isinstance(port, bool) or not isinstance(port, int) or not 0 <= port <= 65535
+                   for port in (src_port, dst_port))
+        ):
+            result["flow"] = self._untracked_metadata("Invalid flow key data")
+            return result
 
         # -------------------------
         # Bidirectional flow key

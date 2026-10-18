@@ -1,3 +1,9 @@
 [IDS] Processed events: 6
 [IDS] Skipped events: 0
+T12 UDP: strict timeout boundary, complete summary, cleanup and independent reuse PASS
+T12 TCP: strict timeout boundary, complete summary, cleanup and independent reuse PASS
+T12 separate custom TCP/UDP timeouts and zero-timeout boundary PASS
+T12 malformed/skip markers, invalid clocks and out-of-order timestamps PASS
+T12 explicit pipeline cleanup, skipped events and TCP termination reasons PASS
+T12 JSONL/PCAP EOF does not imply timeout PASS
 T12 PASS

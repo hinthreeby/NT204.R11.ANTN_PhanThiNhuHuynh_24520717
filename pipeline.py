@@ -38,6 +38,16 @@ class IDSPipeline:
             config
         )
 
+    def expire_idle_flows(self, current_time: float) -> list[dict]:
+        """Return timeout summaries without requiring another packet.
+
+        Use the same time domain as capture timestamps. This call neither
+        flushes active flows at EOF nor adds time to packet durations.
+        Skipped events do not implicitly consume summaries; callers can use
+        this method to advance time explicitly and collect expired flows.
+        """
+        return self.flow_tracker.expire_idle_flows(current_time)
+
     def process_event(
         self,
         event: dict,
