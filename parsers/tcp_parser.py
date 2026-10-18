@@ -1,4 +1,4 @@
-from scapy.layers.inet import TCP
+from scapy.layers.inet import IP, TCP
 
 
 TCP_FLAGS = [
@@ -31,6 +31,18 @@ def parse_tcp(tcp_layer: TCP) -> dict:
     """
 
     flag_value = int(tcp_layer.flags)
+    payload = bytes(tcp_layer.payload)
+
+    # Scapy can attach link padding below TCP. It is outside the IPv4 packet,
+    # so exclude it when the enclosing packet provides valid length fields.
+    ip_layer = tcp_layer.underlayer
+    if isinstance(ip_layer, IP):
+        lengths = (ip_layer.len, ip_layer.ihl, tcp_layer.dataofs)
+        if all(isinstance(value, int) for value in lengths):
+            total_length, ip_words, tcp_words = lengths
+            header_length = (ip_words + tcp_words) * 4
+            if 5 <= ip_words <= 15 and 5 <= tcp_words <= 15 and total_length >= header_length:
+                payload = payload[:total_length - header_length]
 
     return {
         "protocol": "TCP",
@@ -43,5 +55,6 @@ def parse_tcp(tcp_layer: TCP) -> dict:
         "window": tcp_layer.window,
         "checksum": tcp_layer.chksum,
         "urgent_pointer": tcp_layer.urgptr,
-        "payload_length": len(bytes(tcp_layer.payload)),
+        "payload_length": len(payload),
+        "payload_hex": payload.hex(),
     }
