@@ -45,9 +45,13 @@ def build_flow_key(
 def create_flow_id(
     flow_key: FlowKey,
     start_time: float,
+    previous_flow_id: str | None = None,
 ) -> str:
     """
     Create a stable identifier for one active flow instance.
+
+    Include the previous instance when reusing a terminal TCP tuple,
+    even if both connections have the same capture timestamp.
     """
 
     material = "|".join(
@@ -57,6 +61,9 @@ def create_flow_id(
             start_time,
         )
     )
+
+    if previous_flow_id is not None:
+        material += f"|{previous_flow_id}"
 
     digest = sha256(
         material.encode("utf-8")
@@ -204,16 +211,16 @@ class Flow:
         else:
             flag_set = set()
 
-        # RST has highest priority
-        if "RST" in flag_set:
-            self.tcp_state = "RESET"
-            return
-
         # Terminal states stay terminal.
         if self.tcp_state in {
             "CLOSED",
             "RESET",
         }:
+            return
+
+        # RST has highest priority in an active connection.
+        if "RST" in flag_set:
+            self.tcp_state = "RESET"
             return
 
         # Connection closing

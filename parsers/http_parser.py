@@ -54,6 +54,26 @@ def parse_http(payload: bytes) -> dict:
 
     header_section, body = split_http_message(text)
 
+    # Keep the existing text schema, but retain bytes that replacement decoding
+    # would otherwise discard before the Decoder can validate the message.
+    if b"\r\n\r\n" in payload:
+        raw_header, raw_body = payload.split(b"\r\n\r\n", 1)
+    elif b"\n\n" in payload:
+        raw_header, raw_body = payload.split(b"\n\n", 1)
+    else:
+        raw_header = payload
+        raw_body = b""
+
+    message_fields = {"body": body}
+    try:
+        raw_header.decode("utf-8")
+    except UnicodeDecodeError:
+        message_fields["raw_header_hex"] = raw_header.hex()
+    try:
+        raw_body.decode("utf-8")
+    except UnicodeDecodeError:
+        message_fields["raw_body_hex"] = raw_body.hex()
+
     lines = header_section.splitlines()
 
     if not lines:
@@ -89,7 +109,7 @@ def parse_http(payload: bytes) -> dict:
             "status_code": status_code,
             "reason": reason,
             "headers": headers,
-            "body": body,
+            **message_fields,
         }
 
     # HTTP request
@@ -106,12 +126,12 @@ def parse_http(payload: bytes) -> dict:
                 "uri": uri,
                 "version": version,
                 "headers": headers,
-                "body": body,
+                **message_fields,
             }
 
     return {
         "protocol": "HTTP",
         "type": "UNKNOWN",
         "headers": headers,
-        "body": body,
+        **message_fields,
     }

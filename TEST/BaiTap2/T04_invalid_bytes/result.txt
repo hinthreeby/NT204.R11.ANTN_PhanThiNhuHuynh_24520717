@@ -31,4 +31,16 @@
     "reason": "Invalid UTF-8 byte sequence: 'utf-8' codec can't decode byte 0xff in position 6: invalid start byte"
   }
 }
+T04 request/ascii: decoder=success, preprocess=valid PASS
+T04 request/utf8: decoder=success, preprocess=valid PASS
+T04 request/invalid_ff: decoder=partial, preprocess=partial PASS
+T04 request/truncated_utf8: decoder=partial, preprocess=partial PASS
+T04 request/valid_replacement: decoder=success, preprocess=valid PASS
+T04 response/ascii: decoder=success, preprocess=valid PASS
+T04 response/utf8: decoder=success, preprocess=valid PASS
+T04 response/invalid_ff: decoder=partial, preprocess=partial PASS
+T04 response/truncated_utf8: decoder=partial, preprocess=partial PASS
+T04 response/valid_replacement: decoder=success, preprocess=valid PASS
+T04 invalid HTTP request/response header bytes PASS
+T04 Parser -> Decoder -> Preprocessor -> Flow Tracker and JSONL round-trip PASS
 T04 PASS

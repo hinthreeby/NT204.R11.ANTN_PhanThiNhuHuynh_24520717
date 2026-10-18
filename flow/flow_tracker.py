@@ -180,9 +180,13 @@ class FlowTracker:
             )
 
             if idle_time > timeout:
+                close_reason = {
+                    "CLOSED": "tcp_closed",
+                    "RESET": "tcp_reset",
+                }.get(flow.tcp_state, "idle_timeout")
                 expired_flows.append(
                     flow.to_expired_summary(
-                        "idle_timeout"
+                        close_reason
                     )
                 )
 
@@ -355,6 +359,28 @@ class FlowTracker:
             flow_key
         )
 
+        flags = transport.get("flags", [])
+        if isinstance(flags, str):
+            flag_set = {flags.upper()}
+        elif isinstance(flags, (list, tuple, set)):
+            flag_set = {str(flag).upper() for flag in flags}
+        else:
+            flag_set = set()
+
+        previous_flow_id = None
+        if (
+            flow is not None
+            and protocol == "TCP"
+            and flow.tcp_state in {"CLOSED", "RESET"}
+            and "SYN" in flag_set
+            and not flag_set.intersection({"ACK", "FIN", "RST"})
+        ):
+            # Retire the complete old instance; never clear its counters.
+            close_reason = "tcp_closed" if flow.tcp_state == "CLOSED" else "tcp_reset"
+            result["expired_flows"].append(flow.to_expired_summary(close_reason))
+            previous_flow_id = flow.flow_id
+            flow = None
+
         # -------------------------
         # Application protocol
         # -------------------------
@@ -383,6 +409,7 @@ class FlowTracker:
                 flow_id=create_flow_id(
                     flow_key,
                     timestamp,
+                    previous_flow_id=previous_flow_id,
                 ),
 
                 key=flow_key,
@@ -425,15 +452,6 @@ class FlowTracker:
             src_port=src_port,
             dst_ip=dst_ip,
             dst_port=dst_port,
-        )
-
-        # -------------------------
-        # TCP flags
-        # -------------------------
-
-        flags = transport.get(
-            "flags",
-            [],
         )
 
         # -------------------------

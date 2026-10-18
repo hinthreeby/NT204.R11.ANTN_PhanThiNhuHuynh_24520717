@@ -1,3 +1,5 @@
-[IDS] Processed events: 9
+[IDS] Processed events: 17
 [IDS] Skipped events: 0
+T09 original close/reset and same-tuple reuse PASS
+T09 counters, direction, duration, object isolation and termination reasons PASS
 T09 PASS

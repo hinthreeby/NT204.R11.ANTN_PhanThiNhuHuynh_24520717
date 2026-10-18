@@ -36,6 +36,17 @@ def decode_http_application(
     decode_status = "success"
     reasons = []
 
+    if "raw_header_hex" in result:
+        try:
+            header_result = decode_character_data(bytes.fromhex(result["raw_header_hex"]))
+        except (TypeError, ValueError):
+            decode_status = "partial"
+            reasons.append("Invalid raw_header_hex; original HTTP header bytes unavailable")
+        else:
+            if header_result["status"] == "partial":
+                decode_status = "partial"
+                reasons.append(f"HTTP header: {header_result['reason']}")
+
     # URL / Percent decoding
     uri = result.get("uri")
 
@@ -68,6 +79,16 @@ def decode_http_application(
 
     # Character decoding
     body = result.get("body")
+
+    # Parser events stay JSON-compatible. Recover the original malformed body
+    # before character decoding instead of trusting its replacement text.
+    if isinstance(body, str) and "raw_body_hex" in result:
+        result["raw_body"] = body
+        try:
+            body = bytes.fromhex(result["raw_body_hex"])
+        except (TypeError, ValueError):
+            decode_status = "partial"
+            reasons.append("Invalid raw_body_hex; original HTTP body bytes unavailable")
 
     body_text = None
 
