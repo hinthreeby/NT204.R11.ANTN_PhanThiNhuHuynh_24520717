@@ -15,6 +15,19 @@ Một TCP flow gồm 6 packet:
 5. PSH/ACK backward - 120 bytes
 6. FIN/ACK forward - 52 bytes
 
+Giữ nguyên sáu event trong `input.jsonl` và toàn bộ assertion cũ (schema dùng `network.len`).
+
+`validate.py` còn tạo sáu packet IPv4/TCP trong bộ nhớ, serialize rồi đưa qua parser Bài 1 và toàn bộ pipeline. Các packet dùng `network.total_length` do `parse_ipv4()` sinh ra, không có `network.len`:
+
+1. SYN forward - 40 bytes, không payload.
+2. SYN/ACK backward - 40 bytes, không payload.
+3. ACK forward - 40 bytes, không payload.
+4. PSH/ACK forward - 88 bytes, gồm 48 bytes payload.
+5. PSH/ACK backward - 108 bytes, gồm 68 bytes payload.
+6. FIN/ACK forward - 40 bytes, không payload.
+
+Không tạo thêm file PCAP hay thay thế dữ liệu test cũ.
+
 ## Cách chạy
 
 Chạy từ thư mục gốc repository.
@@ -38,11 +51,22 @@ python TEST/BaiTap2/T13_flow_statistics/validate.py
 - duration = 5.0
 - Trạng thái cuối là CLOSING.
 
+Với sáu packet đi qua parser Bài 1:
+
+- Byte count tích lũy: 40, 80, 120, 208, 316, 356.
+- Tổng forward = 208 bytes; backward = 148 bytes.
+- Packet count, direction, TCP state, flag counters và duration giữ cùng kết quả như flow cũ.
+- SYN không payload vẫn đóng góp 40 bytes; packet có payload chỉ tính IPv4 total length một lần.
+
+Kiểm tra thêm thứ tự ưu tiên `total_length` → `len` → `length` → `packet_length` → `payload_length`. Chỉ dùng fallback khi field trước thiếu hoặc không hợp lệ; kiểm tra `None`, chuỗi lỗi, số âm, số thực không nguyên, boolean và giá trị không hữu hạn. Chuỗi số nguyên hợp lệ được chấp nhận; độ dài 0 không kích hoạt fallback.
+
 ## Kết quả thực tế
 - Trạng thái: PASS
 - Tất cả packet/byte/direction/flag counters đều đúng.
 - Duration được tính đúng.
 - Validator trả về T13 PASS.
+- Đã chạy lại cả fixture cũ và kiểm tra schema parser Bài 1; kết quả được ghi trong `result.txt`.
+- Bộ assertion mở rộng phát hiện lỗi ở implementation cũ và PASS sau khi sửa.
 
 ## Minh chứng
 - input.jsonl

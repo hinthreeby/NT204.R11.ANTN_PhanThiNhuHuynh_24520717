@@ -1,3 +1,6 @@
 [IDS] Processed events: 6
 [IDS] Skipped events: 0
+T13 legacy fixture PASS: 444 bytes (forward 264, backward 180)
+T13 BaiTap1 parser schema PASS: SYN 40 bytes; total 356 (forward 208, backward 148)
+T13 length priority and invalid-value fallbacks PASS
 T13 PASS

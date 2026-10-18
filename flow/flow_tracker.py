@@ -49,8 +49,9 @@ class FlowTracker:
         """
         Get packet size from normalized event data.
 
-        Prefer IPv4 total length and fall back to
-        transport payload length when necessary.
+        Prefer IPv4 total_length, then legacy network length
+        fields, then transport payload length. Use one size only;
+        reject negative, fractional, boolean and non-finite values.
         """
 
         network = event.get(
@@ -63,6 +64,7 @@ class FlowTracker:
             dict,
         ):
             for field_name in (
+                "total_length",
                 "len",
                 "length",
                 "packet_length",
@@ -74,6 +76,9 @@ class FlowTracker:
                 if value is None:
                     continue
 
+                if isinstance(value, bool):
+                    continue
+
                 try:
                     size = int(
                         value
@@ -82,7 +87,11 @@ class FlowTracker:
                 except (
                     TypeError,
                     ValueError,
+                    OverflowError,
                 ):
+                    continue
+
+                if isinstance(value, float) and value != size:
                     continue
 
                 if size >= 0:
@@ -97,19 +106,24 @@ class FlowTracker:
             transport,
             dict,
         ):
+            value = transport.get("payload_length", 0)
+            if isinstance(value, bool):
+                return 0
+
             try:
                 payload_length = int(
-                    transport.get(
-                        "payload_length",
-                        0,
-                    )
+                    value
                 )
 
             except (
                 TypeError,
                 ValueError,
+                OverflowError,
             ):
                 payload_length = 0
+
+            if isinstance(value, float) and value != payload_length:
+                return 0
 
             return max(
                 payload_length,
