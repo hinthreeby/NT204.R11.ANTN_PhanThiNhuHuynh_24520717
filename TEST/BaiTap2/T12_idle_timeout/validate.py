@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 
-path = Path(
-    "TEST/T12_idle_timeout/events.jsonl"
-)
+path = Path(__file__).resolve().parent / "events.jsonl"
 
 
 with path.open(

@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 
-path = Path(
-    "TEST/T09_tcp_close_reset/events.jsonl"
-)
+path = Path(__file__).resolve().parent / "events.jsonl"
 
 
 with path.open(

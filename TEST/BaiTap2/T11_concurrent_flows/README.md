@@ -20,9 +20,11 @@ Mỗi flow có một packet forward và một packet backward.
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T11_concurrent_flows/input.jsonl --output TEST/T11_concurrent_flows/events.jsonl
-python TEST/T11_concurrent_flows/validate.py
+python main.py --input TEST/BaiTap2/T11_concurrent_flows/input.jsonl --output TEST/BaiTap2/T11_concurrent_flows/events.jsonl
+python TEST/BaiTap2/T11_concurrent_flows/validate.py
 ```
 ## Kết quả mong đợi
 - Có đúng 2 flow_id khác nhau.

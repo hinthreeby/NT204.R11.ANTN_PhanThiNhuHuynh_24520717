@@ -13,9 +13,11 @@ Event hợp lệ ở network/transport nhưng không có:
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T06_missing_field/input.jsonl --output TEST/T06_missing_field/events.jsonl
-python TEST/T06_missing_field/validate.py
+python main.py --input TEST/BaiTap2/T06_missing_field/input.jsonl --output TEST/BaiTap2/T06_missing_field/events.jsonl
+python TEST/BaiTap2/T06_missing_field/validate.py
 ```
 ## Kết quả mong đợi
 - Không phát sinh exception.

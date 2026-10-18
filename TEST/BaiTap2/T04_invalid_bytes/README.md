@@ -10,8 +10,10 @@ Kiểm tra Decoder xử lý byte sequence không hợp lệ theo cách an toàn,
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```powershell
-python -X utf8 -m TEST.T04_invalid_bytes.test
+python -X utf8 -m TEST.BaiTap2.T04_invalid_bytes.test
 ```
 
 ## Kết quả mong đợi

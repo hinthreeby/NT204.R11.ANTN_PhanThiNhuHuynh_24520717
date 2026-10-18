@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 
-path = Path(
-    "TEST/T14_malformed_event/events.jsonl"
-)
+path = Path(__file__).resolve().parent / "events.jsonl"
 
 
 with path.open(

@@ -13,9 +13,11 @@ Test gồm hai event:
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T05_normalization/input.jsonl --output TEST/T05_normalization/events.jsonl
-python TEST/T05_normalization/validate.py
+python main.py --input TEST/BaiTap2/T05_normalization/input.jsonl --output TEST/BaiTap2/T05_normalization/events.jsonl
+python TEST/BaiTap2/T05_normalization/validate.py
 ```
 ## Kết quả mong đợi
 - ipv4 → IPv4

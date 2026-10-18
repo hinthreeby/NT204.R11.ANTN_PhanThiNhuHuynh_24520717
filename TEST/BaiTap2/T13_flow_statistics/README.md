@@ -17,9 +17,11 @@ Một TCP flow gồm 6 packet:
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T13_flow_statistics/input.jsonl --output TEST/T13_flow_statistics/events.jsonl
-python TEST/T13_flow_statistics/validate.py
+python main.py --input TEST/BaiTap2/T13_flow_statistics/input.jsonl --output TEST/BaiTap2/T13_flow_statistics/events.jsonl
+python TEST/BaiTap2/T13_flow_statistics/validate.py
 ```
 
 ## Kết quả mong đợi

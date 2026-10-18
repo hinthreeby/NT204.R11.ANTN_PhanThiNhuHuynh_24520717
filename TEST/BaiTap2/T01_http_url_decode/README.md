@@ -10,8 +10,11 @@ Kiểm tra Decoder giải mã URI có percent-encoding nhưng vẫn giữ nguyê
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```powershell
-python main.py --input TEST\T01_http_url_decode\input.jsonl --output TEST\T01_http_url_decode\events.jsonl
+python main.py --input TEST/BaiTap2/T01_http_url_decode/input.jsonl --output TEST/BaiTap2/T01_http_url_decode/events.jsonl
+python TEST/BaiTap2/T01_http_url_decode/validate.py
 ```
 
 ## Kết quả mong đợi
@@ -33,6 +36,7 @@ python main.py --input TEST\T01_http_url_decode\input.jsonl --output TEST\T01_ht
 - `input.jsonl`
 - `events.jsonl`
 - `result.txt`
+- `validate.py`
 
 ## Kết luận
 

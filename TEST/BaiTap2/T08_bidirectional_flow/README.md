@@ -15,9 +15,11 @@ Event thứ hai là chiều đảo ngược của event thứ nhất.
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T08_bidirectional_flow/input.jsonl --output TEST/T08_bidirectional_flow/events.jsonl
-python TEST/T08_bidirectional_flow/validate.py
+python main.py --input TEST/BaiTap2/T08_bidirectional_flow/input.jsonl --output TEST/BaiTap2/T08_bidirectional_flow/events.jsonl
+python TEST/BaiTap2/T08_bidirectional_flow/validate.py
 ```
 
 ## Kết quả mong đợi

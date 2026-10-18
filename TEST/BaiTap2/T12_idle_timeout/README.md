@@ -15,9 +15,11 @@ Test tạo một UDP flow và một TCP flow, sau đó tạo các event có time
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T12_idle_timeout/input.jsonl --output TEST/T12_idle_timeout/events.jsonl
-python TEST/T12_idle_timeout/validate.py
+python main.py --input TEST/BaiTap2/T12_idle_timeout/input.jsonl --output TEST/BaiTap2/T12_idle_timeout/events.jsonl
+python TEST/BaiTap2/T12_idle_timeout/validate.py
 ```
 
 ## Kết quả mong đợi

@@ -15,9 +15,11 @@ Hai event:
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T10_udp_dns_flow/input.jsonl --output TEST/T10_udp_dns_flow/events.jsonl
-python TEST/T10_udp_dns_flow/validate.py
+python main.py --input TEST/BaiTap2/T10_udp_dns_flow/input.jsonl --output TEST/BaiTap2/T10_udp_dns_flow/events.jsonl
+python TEST/BaiTap2/T10_udp_dns_flow/validate.py
 ```
 ## Kết quả mong đợi
 - Hai packet có cùng flow_id.

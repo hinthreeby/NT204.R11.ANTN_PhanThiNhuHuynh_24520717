@@ -25,9 +25,11 @@ Test gồm hai TCP flow độc lập.
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T09_tcp_close_reset/input.jsonl --output TEST/T09_tcp_close_reset/events.jsonl
-python TEST/T09_tcp_close_reset/validate.py
+python main.py --input TEST/BaiTap2/T09_tcp_close_reset/input.jsonl --output TEST/BaiTap2/T09_tcp_close_reset/events.jsonl
+python TEST/BaiTap2/T09_tcp_close_reset/validate.py
 ```
 ## Kết quả mong đợi
 Flow đóng bình thường:

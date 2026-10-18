@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 
-EVENTS_PATH = Path(
-    "TEST/T03_smtp_mime/events.jsonl"
-)
+EVENTS_PATH = Path(__file__).resolve().parent / "events.jsonl"
 
 
 with EVENTS_PATH.open(

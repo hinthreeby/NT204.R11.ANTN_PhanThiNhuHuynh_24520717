@@ -16,9 +16,11 @@ Cả ba packet có `payload_length = 0`.
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T07_tcp_handshake_tracking/input.jsonl --output TEST/T07_tcp_handshake_tracking/events.jsonl
-python TEST/T07_tcp_handshake_tracking/validate.py
+python main.py --input TEST/BaiTap2/T07_tcp_handshake_tracking/input.jsonl --output TEST/BaiTap2/T07_tcp_handshake_tracking/events.jsonl
+python TEST/BaiTap2/T07_tcp_handshake_tracking/validate.py
 ```
 
 ## Kết quả mong đợi

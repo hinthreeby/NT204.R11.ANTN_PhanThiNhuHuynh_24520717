@@ -1,1 +1,3 @@
+[IDS] Processed events: 9
+[IDS] Skipped events: 0
 T09 PASS

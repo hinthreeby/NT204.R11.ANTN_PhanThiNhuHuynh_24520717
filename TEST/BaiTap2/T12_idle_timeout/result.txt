@@ -1,1 +1,3 @@
+[IDS] Processed events: 6
+[IDS] Skipped events: 0
 T12 PASS

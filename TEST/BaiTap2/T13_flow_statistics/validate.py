@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 
-path = Path(
-    "TEST/T13_flow_statistics/events.jsonl"
-)
+path = Path(__file__).resolve().parent / "events.jsonl"
 
 
 with path.open(

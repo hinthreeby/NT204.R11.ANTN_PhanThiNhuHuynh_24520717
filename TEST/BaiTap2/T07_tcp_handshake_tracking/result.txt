@@ -1,1 +1,3 @@
+[IDS] Processed events: 3
+[IDS] Skipped events: 0
 T07 PASS

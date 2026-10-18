@@ -1,4 +1,10 @@
 import json
+import sys
+from pathlib import Path
+
+
+# Allow direct execution from any working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from config import IDSConfig
 from decoder.decoder import Decoder

@@ -10,8 +10,11 @@ Kiểm tra Decoder giải mã HTML entity trong nội dung HTTP text.
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```powershell
-python main.py --input TEST\T02_html_entity\input.jsonl --output TEST\T02_html_entity\events.jsonl
+python main.py --input TEST/BaiTap2/T02_html_entity/input.jsonl --output TEST/BaiTap2/T02_html_entity/events.jsonl
+python TEST/BaiTap2/T02_html_entity/validate.py
 ```
 
 ## Kết quả mong đợi
@@ -33,6 +36,7 @@ python main.py --input TEST\T02_html_entity\input.jsonl --output TEST\T02_html_e
 - `input.jsonl`
 - `events.jsonl`
 - `result.txt`
+- `validate.py`
 
 ## Kết luận
 

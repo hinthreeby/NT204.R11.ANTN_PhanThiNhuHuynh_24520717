@@ -17,9 +17,11 @@ Event cố tình chứa:
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```bash
-python main.py --input TEST/T14_malformed_event/input.jsonl --output TEST/T14_malformed_event/events.jsonl
-python TEST/T14_malformed_event/validate.py
+python main.py --input TEST/BaiTap2/T14_malformed_event/input.jsonl --output TEST/BaiTap2/T14_malformed_event/events.jsonl
+python TEST/BaiTap2/T14_malformed_event/validate.py
 ```
 ## Kết quả mong đợi
 - Chương trình không crash.

@@ -10,9 +10,11 @@ Kiểm tra SMTP/MIME Decoder xử lý Base64 và Quoted-Printable khi `Content-T
 
 ## Cách chạy
 
+Chạy từ thư mục gốc repository.
+
 ```powershell
-python main.py --input TEST\T03_smtp_mime\input.jsonl --output TEST\T03_smtp_mime\events.jsonl
-python TEST\T03_smtp_mime\validate.py
+python main.py --input TEST/BaiTap2/T03_smtp_mime/input.jsonl --output TEST/BaiTap2/T03_smtp_mime/events.jsonl
+python TEST/BaiTap2/T03_smtp_mime/validate.py
 ```
 
 ## Kết quả mong đợi
