@@ -1,1 +1,1 @@
-"""Core Engine contracts only; rule processing is not implemented or activated."""
+"""Core Engine contracts and rule loading; matching is not implemented or activated."""

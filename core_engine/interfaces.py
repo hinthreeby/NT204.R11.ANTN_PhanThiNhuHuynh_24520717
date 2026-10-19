@@ -25,6 +25,10 @@ class RuleLoader(Protocol):
         """Yield enabled rule text with provenance; report individual load errors."""
         ...
 
+    def is_rule_enabled(self, rule: InternalRule) -> bool:
+        """Apply configured SID policy after the Validator supplies a valid rule."""
+        ...
+
 
 class RuleParserValidator(Protocol):
     def parse(self, source: RuleText) -> RuleValidationResult:
