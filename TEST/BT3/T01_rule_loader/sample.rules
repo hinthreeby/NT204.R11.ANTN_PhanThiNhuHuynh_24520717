@@ -1,0 +1,9 @@
+# T01: valid rules mixed with comments and empty lines.
+
+alert tcp any any -> 192.0.2.10 80 (msg:"T01 HTTP"; content:"GET /"; sid:100001; rev:1;)
+  # An indented comment must also be ignored.
+
+  alert udp any any -> 192.0.2.53 53 (msg:"T01 DNS # marker; unchanged"; sid:100002; rev:1;)
+
+alert tcp 198.51.100.0/24 1024:65535 <> 192.0.2.25 25 (msg:"T01 SMTP"; sid:100003; rev:1;)
+# End of primary input.

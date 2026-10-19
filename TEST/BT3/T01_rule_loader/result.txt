@@ -1,0 +1,16 @@
+Command: python -B TEST/BT3/T01_rule_loader/validate.py
+Python: 3.10.5
+Working directory: repository root
+Exit code: 0
+
+PASS 1: comments/blanks filtered; exact text, filename and line number retained
+PASS 2: all three sample rules accepted by the real Validator
+PASS 3: two files produce six ordered candidates, five valid and one invalid
+PASS 4: explicit file enable/disable and default enable policies
+PASS 5: SID policy applied only after validation; disabled candidate remains intact
+PASS 6: invalid middle rule rejected; later rule accepted; input fixtures unchanged
+T01 PASS
+
+CWD independence: PASS (absolute script path from external temporary directory; identical output)
+External CWD exit code: 0
+Temporary directory removed: yes
