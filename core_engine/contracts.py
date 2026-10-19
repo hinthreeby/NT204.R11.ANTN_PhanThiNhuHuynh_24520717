@@ -1,12 +1,4 @@
-"""Dictionary contracts for existing pipeline data, without packet-library types.
-
-These annotations do not validate events at runtime or change the pipeline schema.
-Missing legacy payload_hex means unavailable bytes, not an empty payload. Future
-consumers must validate hex before bytes.fromhex(); payload_length is transport
-data size, while network.total_length includes IPv4 and transport headers.
-Skip/invalid events must be filtered before evaluation; partial events can only
-be evaluated using fields known to be valid. No decoded text replaces raw bytes.
-"""
+"""Define normalized event and flow context types."""
 
 from typing import Literal, TypedDict
 
@@ -30,11 +22,12 @@ class TransportFields(TypedDict, total=False):
     dst_port: int | None
     flags: list[str]
     payload_length: int
+    # Missing payload_hex means unavailable bytes, not an empty payload.
     payload_hex: str
 
 
 class ApplicationFields(TypedDict, total=False):
-    """Minimal view; existing HTTP/DNS/SMTP fields remain in the original dict."""
+    """Describe common application fields."""
 
     protocol: str
     decode_status: str
@@ -47,11 +40,8 @@ class Endpoint(TypedDict):
 
 
 class FlowContext(TypedDict, total=False):
-    """View of event['flow']; unavailable metadata may be absent or None.
-
-    A/B and forward/backward are relative to the first observed packet.
-    client_server_direction is a proposed optional enrichment, NOT emitted by
-    today's tracker. Absent means UNKNOWN; never infer it from direction alone.
+    """
+    Describe flow metadata without assuming client/server direction.
     """
 
     tracked: bool
@@ -68,6 +58,7 @@ class FlowContext(TypedDict, total=False):
     packet_count: int
     byte_count: int
     reason: str
+    # Optional enrichment; absent means UNKNOWN, regardless of forward/backward.
     client_server_direction: ClientServerDirection
 
 
@@ -79,12 +70,8 @@ class _EventFields(TypedDict):
 
 
 class NormalizedEvent(_EventFields, total=False):
-    """Read-only-by-convention view of the existing dict, not a replacement DTO.
-
-    A future evaluation boundary must require valid timestamp, IPv4 addresses,
-    TCP/UDP protocol and ports. Optional fields are capability-specific: missing
-    flags, raw bytes or flow state must not become fabricated matching evidence.
-    Extra existing parser/decoder/preprocessor/flow fields are preserved.
+    """
+    Describe normalized events from the existing pipeline.
     """
 
     packet_id: int

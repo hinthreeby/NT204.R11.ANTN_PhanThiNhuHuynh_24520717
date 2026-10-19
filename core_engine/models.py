@@ -1,9 +1,4 @@
-"""Internal rule and result shapes, with no parsing, validation or matching.
-
-Dataclasses provide structure only, not runtime validity checks. The future
-validator owns syntax and supported-keyword checks. JSON output can use
-dataclasses.asdict(); byte evidence is represented as hex strings.
-"""
+"""Define internal rule and detection result models."""
 
 from dataclasses import dataclass
 from typing import Literal
@@ -20,9 +15,8 @@ class RuleText:
 
 @dataclass(frozen=True, slots=True)
 class RuleHeader:
-    """Selectors retain any/IP/CIDR and any/single/range port expressions.
-
-    The parser will validate these strings; this model does not interpret them.
+    """
+    Store rule header fields.
     """
 
     action: Literal["alert"]
@@ -36,10 +30,8 @@ class RuleHeader:
 
 @dataclass(frozen=True, slots=True)
 class RuleOption:
-    """Ordered options preserve repeated content and their modifier positions.
-
-    Values are textual at this stage; a later parser defines their semantics.
-    None represents a valueless option, not a missing required value.
+    """
+    Store a rule option without changing its value.
     """
 
     name: str
@@ -67,14 +59,12 @@ class RuleValidationResult:
 
 @dataclass(frozen=True, slots=True)
 class MatchInformation:
-    """Identify the matched buffer/field explicitly.
-
-    Optional start/end are zero-based byte offsets, end exclusive, in that
-    buffer. transport.payload_hex denotes its decoded bytes, not hex characters.
-    Application buffers must declare their byte representation before matching.
+    """
+    Store matched bytes and their location in a buffer.
     """
 
     field: str
+    # Offsets count bytes, not hex characters; end is exclusive.
     start: int | None = None
     end: int | None = None
     matched_hex: str | None = None

@@ -1,10 +1,4 @@
-"""Structural interfaces for future components; no executable implementations.
-
-The planned pipeline boundary is after FlowTracker.process(): pass the tracked
-event and its flow metadata. Do not activate it until evaluation is implemented.
-Consumers must not mutate input events/contexts. No component imports capture
-libraries, prints alerts from the matcher, or assumes forward means to_server.
-"""
+"""Define interfaces for Core Engine components."""
 
 from pathlib import Path
 from typing import Iterable, Protocol, Sequence
@@ -22,23 +16,23 @@ from .models import (
 
 class RuleLoader(Protocol):
     def load(self, paths: Sequence[Path]) -> Iterable[RuleText]:
-        """Yield enabled rule text with provenance; report individual load errors."""
+        """Read enabled rule files and preserve source locations."""
         ...
 
     def is_rule_enabled(self, rule: InternalRule) -> bool:
-        """Apply configured SID policy after the Validator supplies a valid rule."""
+        """Check whether a validated rule is enabled."""
         ...
 
 
 class RuleParserValidator(Protocol):
     def parse(self, source: RuleText) -> RuleValidationResult:
-        """Classify valid/invalid/unsupported without halting other rules."""
+        """Validate a rule and return its status."""
         ...
 
 
 class RuleRepository(Protocol):
     def add(self, rule: InternalRule) -> None:
-        """Store a validated rule; index construction belongs here."""
+        """Store a validated rule."""
         ...
 
     def candidates(self, normalized_event: NormalizedEvent) -> Sequence[InternalRule]:
@@ -53,7 +47,7 @@ class RuleMatchingEngine(Protocol):
         normalized_event: NormalizedEvent,
         flow_context: FlowContext | None,
     ) -> MatchResult:
-        """Evaluate one rule without generating or printing detection events."""
+        """Evaluate one rule against event and flow data."""
         ...
 
 
@@ -63,7 +57,7 @@ class RuleEvaluationEngine(Protocol):
         normalized_event: NormalizedEvent,
         flow_context: FlowContext | None,
     ) -> Sequence[MatchResult]:
-        """Query candidates and evaluate all; retain results for multiple matches."""
+        """Evaluate all candidate rules for an event."""
         ...
 
 
@@ -74,7 +68,7 @@ class DetectionEventGenerator(Protocol):
         flow_context: FlowContext | None,
         match_result: MatchResult,
     ) -> DetectionEvent:
-        """Build one detection for a confirmed MATCH; never for NO_MATCH."""
+        """Build a detection event for a confirmed match."""
         ...
 
 
@@ -84,5 +78,5 @@ class CoreEngine(Protocol):
         normalized_event: NormalizedEvent,
         flow_context: FlowContext | None,
     ) -> CoreEngineResult:
-        """Future orchestration of evaluation and detection generation."""
+        """Evaluate an event and return match and detection results."""
         ...
