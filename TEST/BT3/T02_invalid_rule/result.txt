@@ -1,0 +1,35 @@
+Python: 3.10.5
+Platform: win32
+Working directory: repository root
+
+Command: python -B TEST/BT3/T02_invalid_rule/validate.py
+PASS line 2: valid before errors -> valid; sid=200001
+PASS line 3: missing header component -> invalid; Header requires action protocol src_ip src_port direction dst_ip dst_port
+PASS line 4: missing options parentheses -> invalid; Missing parenthesized rule options
+PASS line 5: malformed protocol token -> invalid; Action and protocol must be identifiers
+PASS line 6: port outside range -> invalid; Port must be in 0..65535
+PASS line 7: malformed IPv4 address -> invalid; Invalid IPv4/CIDR: 999.0.0.1
+PASS line 8: non-integer SID -> invalid; sid requires a decimal integer
+PASS line 9: invalid revision -> invalid; rev must be >= 1
+PASS line 10: unclosed quoted content -> invalid; Unclosed quote/escape or missing closing parenthesis
+PASS line 11: missing closing parenthesis -> invalid; Unclosed quote/escape or missing closing parenthesis
+PASS line 12: unsupported protocol control -> unsupported; Unsupported protocol: icmp
+PASS line 13: unsupported keyword control -> unsupported; Unsupported options: pcre
+PASS line 14: valid after errors -> valid; sid=200014
+PASS: rejected rules excluded; final valid rule accepted; input unchanged
+Cases: 13; valid: 2; invalid: 9; unsupported: 2
+T02 PASS
+Exit code: 0
+
+Command: python -B TEST/BT3/T01_rule_loader/validate.py
+PASS 1: comments/blanks filtered; exact text, filename and line number retained
+PASS 2: all three sample rules accepted by the real Validator
+PASS 3: two files produce six ordered candidates, five valid and one invalid
+PASS 4: explicit file enable/disable and default enable policies
+PASS 5: SID policy applied only after validation; disabled candidate remains intact
+PASS 6: invalid middle rule rejected; later rule accepted; input fixtures unchanged
+T01 PASS
+Exit code: 0
+
+T02 CWD independence: PASS (external temporary directory, identical output, exit code 0)
+Temporary directory removed: yes

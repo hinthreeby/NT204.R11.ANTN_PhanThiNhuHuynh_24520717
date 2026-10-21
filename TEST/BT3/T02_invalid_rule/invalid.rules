@@ -1,0 +1,14 @@
+# T02: invalid rules between valid rules, with unsupported controls.
+alert tcp any any -> any 80 (msg:"T02 valid before errors"; sid:200001; rev:1;)
+alert tcp any any -> any (msg:"Missing destination port"; sid:200003; rev:1;)
+alert tcp any any -> any 80 msg:"Missing options parentheses"; sid:200004; rev:1;
+alert t@cp any any -> any 80 (msg:"Malformed protocol"; sid:200005; rev:1;)
+alert tcp any 65536 -> any 80 (msg:"Port outside range"; sid:200006; rev:1;)
+alert tcp 999.0.0.1 any -> any 80 (msg:"Invalid IPv4"; sid:200007; rev:1;)
+alert tcp any any -> any 80 (msg:"Invalid SID"; sid:not_an_integer; rev:1;)
+alert tcp any any -> any 80 (msg:"Invalid revision"; sid:200009; rev:0;)
+alert tcp any any -> any 80 (msg:"Unclosed content"; content:"unfinished; sid:200010; rev:1;)
+alert tcp any any -> any 80 (msg:"Missing closing parenthesis"; sid:200011; rev:1;
+alert icmp any any -> any any (msg:"Unsupported protocol control"; sid:200012; rev:1;)
+alert tcp any any -> any 80 (msg:"Unsupported keyword control"; pcre:"/test/"; sid:200013; rev:1;)
+alert udp any any -> any 53 (msg:"T02 valid after errors"; sid:200014; rev:1;)
