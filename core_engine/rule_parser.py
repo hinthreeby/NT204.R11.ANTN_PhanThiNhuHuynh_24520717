@@ -160,7 +160,8 @@ def _port(value: str) -> None:
 
 
 def _header(text: str) -> RuleHeader:
-    fields = text.split()
+    # Keep bracketed selectors together for unsupported syntax reporting.
+    fields = re.findall(r"!?\[[^\[\]]*\]|\S+", text)
     if len(fields) != 7:
         raise _InvalidRule("Header requires action protocol src_ip src_port direction dst_ip dst_port")
     action, protocol, src_ip, src_port, direction, dst_ip, dst_port = fields
