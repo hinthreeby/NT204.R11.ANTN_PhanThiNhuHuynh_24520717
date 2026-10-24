@@ -1,0 +1,12 @@
+# T06: validated selectors, a disabled rule and rejected controls.
+alert tcp 192.168.1.10 50000 -> 10.0.0.20 80 (msg:"T06 TCP exact"; sid:600001; rev:1;)
+alert tcp any any -> any 80 (msg:"T06 TCP IP any"; sid:600002; rev:1;)
+alert tcp 192.168.1.0/24 49000:51000 <> 10.0.0.0/24 80:90 (msg:"T06 TCP CIDR range"; sid:600003; rev:1;)
+alert tcp any any -> any any (msg:"T06 TCP port any"; sid:600004; rev:1;)
+alert udp 192.168.1.10 53000 -> 10.0.0.20 53 (msg:"T06 UDP exact"; sid:600005; rev:1;)
+alert udp any any -> any 53 (msg:"T06 UDP IP any"; sid:600006; rev:1;)
+alert udp 192.168.1.0/24 any -> 10.0.0.0/24 100:200 (msg:"T06 UDP range"; sid:600007; rev:1;)
+alert tcp 192.168.1.10 50000 <> 10.0.0.20 443 (msg:"T06 bidirectional single port"; sid:600008; rev:1;)
+alert tcp any any -> any 80 (msg:"T06 disabled SID"; sid:600009; rev:1;)
+alert tcp any any -> any 80 (msg:"T06 invalid SID"; sid:not_integer; rev:1;)
+alert tcp any any -> any 80 (msg:"T06 unsupported"; pcre:"/test/"; sid:600011; rev:1;)
