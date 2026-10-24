@@ -1,0 +1,5 @@
+# T07: every rule has content, but headers must be checked first.
+alert tcp 192.168.1.10 50000 -> 192.168.1.100 80 (msg:"T07 exact directional"; content:"admin"; sid:700001; rev:1;)
+alert tcp 192.168.1.10 50000 <> 192.168.1.100 80 (msg:"T07 exact bidirectional"; content:"admin"; sid:700002; rev:1;)
+alert tcp 192.168.1.0/24 49000:51000 -> 192.168.1.0/24 80:90 (msg:"T07 CIDR and range"; content:"admin"; sid:700003; rev:1;)
+alert udp 192.168.1.10 50000 -> 192.168.1.100 80 (msg:"T07 UDP control"; content:"admin"; sid:700004; rev:1;)
