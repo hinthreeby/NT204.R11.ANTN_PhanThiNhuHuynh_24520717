@@ -36,7 +36,11 @@ class RuleRepository(Protocol):
         ...
 
     def candidates(self, normalized_event: NormalizedEvent) -> Sequence[InternalRule]:
-        """Select candidate rules using header fields."""
+        """Select indexed candidates that may still fail header matching."""
+        ...
+
+    def header_matches(self, normalized_event: NormalizedEvent) -> Sequence[InternalRule]:
+        """Select rules satisfying the complete header without evaluating options."""
         ...
 
 

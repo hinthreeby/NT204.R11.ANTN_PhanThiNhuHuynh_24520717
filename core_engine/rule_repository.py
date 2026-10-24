@@ -4,8 +4,11 @@ import logging
 from pathlib import Path
 from typing import Sequence
 
+from .contracts import NormalizedEvent
+from .header_matcher import HeaderMatcher
 from .interfaces import RuleLoader, RuleParserValidator
 from .models import InternalRule, RuleValidationResult
+from .rule_indexer import RuleIndexer
 
 
 logger = logging.getLogger(__name__)
@@ -15,6 +18,8 @@ class RuleRepository:
     def __init__(self, loader: RuleLoader | None = None) -> None:
         self._loader = loader
         self._rules: dict[int, InternalRule] = {}
+        self._index = RuleIndexer()
+        self._header_matcher = HeaderMatcher()
 
     @property
     def active_rules(self) -> tuple[InternalRule, ...]:
@@ -38,6 +43,20 @@ class RuleRepository:
             logger.warning("Duplicate SID %s ignored; keeping the first active rule", rule.sid)
             return
         self._rules[rule.sid] = rule
+        self._index.add(rule)
+
+    def candidates(self, normalized_event: NormalizedEvent) -> tuple[InternalRule, ...]:
+        """Return possible rules selected by the index."""
+
+        return self._index.candidates(normalized_event)
+
+    def header_matches(self, normalized_event: NormalizedEvent) -> tuple[InternalRule, ...]:
+        """Return candidates satisfying the complete header only."""
+
+        return tuple(
+            rule for rule in self.candidates(normalized_event)
+            if self._header_matcher.match(rule.header, normalized_event) == "MATCH"
+        )
 
     def add_validated(self, result: RuleValidationResult) -> None:
         """Accept only valid results containing an internal rule."""
@@ -58,3 +77,4 @@ class RuleRepository:
             replacement.add_validated(parser.parse(source))
         self._loader = loader
         self._rules = replacement._rules
+        self._index = replacement._index
