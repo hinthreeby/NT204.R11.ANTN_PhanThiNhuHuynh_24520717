@@ -1,0 +1,5 @@
+# T05: exact endpoints and CIDR/ranges in both rule directions.
+alert tcp 192.168.1.10 50000 -> 10.0.0.20 80 (msg:"T05 exact directional"; sid:500001; rev:1;)
+alert tcp 192.168.1.10 50000 <> 10.0.0.20 80 (msg:"T05 exact bidirectional"; sid:500002; rev:1;)
+alert tcp 192.168.1.0/24 49000:51000 -> 10.0.0.0/24 80:90 (msg:"T05 CIDR directional"; sid:500003; rev:1;)
+alert tcp 192.168.1.0/24 49000:51000 <> 10.0.0.0/24 80:90 (msg:"T05 CIDR bidirectional"; sid:500004; rev:1;)
