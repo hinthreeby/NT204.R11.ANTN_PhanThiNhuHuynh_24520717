@@ -1,0 +1,74 @@
+Python: 3.10.5
+Platform: win32
+Working directory: repository root
+
+Command: python -B TEST/BT3/T04_rule_header/validate.py
+PASS line 2: valid; {"action": "alert", "protocol": "tcp", "src_ip": "192.0.2.10", "src_port": "50000", "direction": "->", "dst_ip": "198.51.100.20", "dst_port": "80", "sid": 400001, "rev": 1, "msg": "T04 TCP exact IPv4"}
+PASS line 3: valid; {"action": "alert", "protocol": "tcp", "src_ip": "any", "src_port": "any", "direction": "->", "dst_ip": "198.51.100.20", "dst_port": "443", "sid": 400002, "rev": 2, "msg": "T04 TCP any source"}
+PASS line 4: valid; {"action": "alert", "protocol": "tcp", "src_ip": "192.0.2.10", "src_port": "12345", "direction": "->", "dst_ip": "any", "dst_port": "any", "sid": 400003, "rev": 3, "msg": "T04 TCP any destination"}
+PASS line 5: valid; {"action": "alert", "protocol": "tcp", "src_ip": "192.0.2.129/24", "src_port": "1000:2000", "direction": "->", "dst_ip": "198.51.100.25", "dst_port": "25", "sid": 400004, "rev": 1, "msg": "T04 TCP source CIDR"}
+PASS line 6: valid; {"action": "alert", "protocol": "tcp", "src_ip": "192.0.2.10", "src_port": "443", "direction": "<>", "dst_ip": "198.51.100.129/24", "dst_port": "1024:65535", "sid": 400005, "rev": 2, "msg": "T04 TCP destination CIDR"}
+PASS line 7: valid; {"action": "alert", "protocol": "tcp", "src_ip": "0.0.0.0/0", "src_port": "0:65535", "direction": "<>", "dst_ip": "203.0.113.7/32", "dst_port": "80:80", "sid": 400006, "rev": 3, "msg": "T04 TCP CIDR and range boundaries"}
+PASS line 8: valid; {"action": "alert", "protocol": "tcp", "src_ip": "any", "src_port": "0", "direction": "->", "dst_ip": "any", "dst_port": "65535", "sid": 400007, "rev": 1, "msg": "T04 TCP single port boundaries"}
+PASS line 9: valid; {"action": "alert", "protocol": "udp", "src_ip": "192.0.2.53", "src_port": "53", "direction": "<>", "dst_ip": "198.51.100.0/24", "dst_port": "50000:60000", "sid": 400008, "rev": 4, "msg": "T04 UDP regression"}
+PASS line 10: invalid; Invalid IPv4/CIDR: 999.0.0.1
+PASS line 11: invalid; Invalid IPv4/CIDR: 198.51.100.0/33
+PASS line 12: invalid; Port must be in 0..65535
+PASS line 13: invalid; Port range is reversed
+PASS line 14: invalid; Invalid header direction: =>; expected -> or <>
+Field value/type assertions: 80 (10 per valid rule)
+Cases: 13; valid TCP: 7; valid UDP: 1; invalid: 5
+T04 PASS
+Exit code: 0
+
+Command: python -B TEST/BT3/T01_rule_loader/validate.py
+PASS 1: comments/blanks filtered; exact text, filename and line number retained
+PASS 2: all three sample rules accepted by the real Validator
+PASS 3: two files produce six ordered candidates, five valid and one invalid
+PASS 4: explicit file enable/disable and default enable policies
+PASS 5: SID policy applied only after validation; disabled candidate remains intact
+PASS 6: invalid middle rule rejected; later rule accepted; input fixtures unchanged
+T01 PASS
+Exit code: 0
+
+Command: python -B TEST/BT3/T02_invalid_rule/validate.py
+PASS line 2: valid before errors -> valid; sid=200001
+PASS line 3: missing header component -> invalid; Header requires action protocol src_ip src_port direction dst_ip dst_port
+PASS line 4: missing options parentheses -> invalid; Missing parenthesized rule options
+PASS line 5: malformed protocol token -> invalid; Action and protocol must be identifiers
+PASS line 6: port outside range -> invalid; Port must be in 0..65535
+PASS line 7: malformed IPv4 address -> invalid; Invalid IPv4/CIDR: 999.0.0.1
+PASS line 8: non-integer SID -> invalid; sid requires a decimal integer
+PASS line 9: invalid revision -> invalid; rev must be >= 1
+PASS line 10: unclosed quoted content -> invalid; Unclosed quote/escape or missing closing parenthesis
+PASS line 11: missing closing parenthesis -> invalid; Unclosed quote/escape or missing closing parenthesis
+PASS line 12: unsupported protocol control -> unsupported; Unsupported protocol: icmp
+PASS line 13: unsupported keyword control -> unsupported; Unsupported options: pcre
+PASS line 14: valid after errors -> valid; sid=200014
+PASS: rejected rules excluded; final valid rule accepted; input unchanged
+Cases: 13; valid: 2; invalid: 9; unsupported: 2
+T02 PASS
+Exit code: 0
+
+Command: python -B TEST/BT3/T03_unsupported_keyword/validate.py
+PASS line 2: supported content/nocase -> valid; sid=300002
+PASS line 3: pcre -> unsupported; Unsupported options: pcre
+PASS line 4: byte_test -> unsupported; Unsupported options: byte_test
+PASS line 5: byte_jump -> unsupported; Unsupported options: byte_jump
+PASS line 6: unknown keyword -> unsupported; Unsupported options: future_keyword
+PASS line 7: multiple unsupported keywords -> unsupported; Unsupported options: pcre, byte_test, byte_jump, future_keyword
+PASS line 8: keyword names inside quoted content -> valid; sid=300008
+PASS line 9: pcre before invalid SID -> invalid; sid requires a decimal integer
+PASS line 10: invalid SID before pcre -> invalid; sid requires a decimal integer
+PASS line 11: unclosed quote with pcre -> invalid; Unclosed quote/escape or missing closing parenthesis
+PASS line 12: missing revision with pcre -> invalid; Missing required options: rev
+PASS line 13: all mandatory option keywords -> valid; sid=300013
+PASS line 14: valid rule after errors -> valid; sid=300014
+PASS: quoted names preserved; supported keywords accepted; invalid syntax takes priority
+Accepted valid SIDs: 300002, 300008, 300013, 300014
+Cases: 13; valid: 4; unsupported: 5; invalid: 4
+T03 PASS
+Exit code: 0
+
+T04 CWD independence: PASS (external temporary directory, identical output, exit code 0)
+Temporary directory removed: yes
