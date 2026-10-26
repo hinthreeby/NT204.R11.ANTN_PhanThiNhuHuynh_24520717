@@ -1,0 +1,9 @@
+# T08: combined flow terms and single-term controls.
+alert tcp any any -> any any (msg:"To server established"; flow:to_server,established; sid:100801; rev:1;)
+alert tcp any any -> any any (msg:"To client established"; flow:to_client,established; sid:100802; rev:1;)
+alert tcp any any -> any any (msg:"Not established"; flow:to_server,not_established; sid:100803; rev:1;)
+alert tcp any any -> any any (msg:"To client not established"; flow:to_client,not_established; sid:100804; rev:1;)
+alert tcp any any -> any any (msg:"To server only"; flow:to_server; sid:100805; rev:1;)
+alert tcp any any -> any any (msg:"To client only"; flow:to_client; sid:100806; rev:1;)
+alert tcp any any -> any any (msg:"Established only"; flow:established; sid:100807; rev:1;)
+alert tcp any any -> any any (msg:"Not established only"; flow:not_established; sid:100808; rev:1;)
