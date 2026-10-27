@@ -1,0 +1,9 @@
+# T09: raw content conditions, without positional modifiers.
+alert tcp any any -> any any (msg:"Case sensitive admin"; content:"admin"; sid:100901; rev:1;)
+alert tcp any any -> any any (msg:"Case insensitive admin"; content:"admin"; nocase; sid:100902; rev:1;)
+alert tcp any any -> any any (msg:"HTTP request"; content:"GET"; sid:100903; rev:1;)
+alert tcp any any -> any any (msg:"Binary content"; content:"|00 FF|"; sid:100904; rev:1;)
+alert tcp any any -> any any (msg:"Multiple contents"; content:"admin"; nocase; content:"GET"; sid:100905; rev:1;)
+alert tcp any any -> any any (msg:"Overlapping content"; content:"aa"; sid:100906; rev:1;)
+alert tcp any any -> any any (msg:"Mixed text and hex"; content:"GET|20|/admin"; sid:100907; rev:1;)
+alert tcp any any -> any any (msg:"Escaped content"; content:"a\|b;\"c"; sid:100908; rev:1;)
