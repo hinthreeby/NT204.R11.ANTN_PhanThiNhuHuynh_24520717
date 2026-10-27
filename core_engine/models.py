@@ -68,6 +68,8 @@ class MatchInformation:
     start: int | None = None
     end: int | None = None
     matched_hex: str | None = None
+    # Zero-based index in InternalRule.options, when tied to one content.
+    option_index: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
