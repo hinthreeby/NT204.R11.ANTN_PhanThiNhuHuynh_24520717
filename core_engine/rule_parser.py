@@ -235,6 +235,8 @@ def _options(parts: list[str], protocol: str) -> tuple[RuleOption, ...]:
             if name in modifiers:
                 raise _InvalidRule(f"Duplicate {name} for one content")
             modifiers.add(name)
+            if modifiers.intersection({"offset", "depth"}) and modifiers.intersection({"distance", "within"}):
+                raise _InvalidRule("Cannot combine offset/depth with distance/within on one content")
             if name == "nocase":
                 if separator:
                     raise _InvalidRule("nocase takes no value")
