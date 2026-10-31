@@ -82,6 +82,20 @@ class DetectionEventGenerator(Protocol):
         """Build a detection event for a confirmed match."""
         ...
 
+    def generate_all(
+        self,
+        normalized_event: NormalizedEvent,
+        flow_context: FlowContext | None,
+        evaluation_result: EvaluationResult | Sequence[MatchResult] | None,
+    ) -> tuple[DetectionEvent, ...]:
+        """Build one detection event for each confirmed match."""
+        ...
+
+    @staticmethod
+    def to_dict(detection: DetectionEvent) -> dict:
+        """Convert a detection event to JSON-compatible data."""
+        ...
+
 
 class CoreEngine(Protocol):
     def process(
