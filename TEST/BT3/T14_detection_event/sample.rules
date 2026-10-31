@@ -1,0 +1,7 @@
+# Main detection rules and field-only/positional checks for T14.
+alert tcp any any -> any 80 (msg:"HTTP admin detected"; content:"/admin"; sid:101401; rev:1; priority:2; classtype:web-application-attack;)
+alert tcp any any -> any 80 (msg:"HTTP GET detected"; content:"GET"; sid:101402; rev:1;)
+alert tcp any any -> any 443 (msg:"Different port"; content:"GET"; sid:101403; rev:1;)
+alert tcp any any -> any 80 (msg:"Flow only"; flow:to_server,not_established; sid:101404; rev:1;)
+alert tcp any any -> any 80 (msg:"Packet only"; flags:A; dsize:10; sid:101405; rev:1;)
+alert tcp any any -> any 80 (msg:"Relative contents"; content:"GET"; content:"/admin"; distance:1; within:6; sid:101406; rev:1;)

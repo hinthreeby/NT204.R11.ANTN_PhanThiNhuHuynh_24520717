@@ -1,0 +1,26 @@
+Command: python -B TEST/BT3/T14_detection_event/validate.py
+PASS single rule with classification: SIDs=[101401]
+PASS two simultaneous rules and wrong-port exclusion: SIDs=[101401, 101402]
+PASS packet-only detection: SIDs=[101405]
+PASS multiple positional contents: SIDs=[101406]
+PASS no matching content: SIDs=[]
+PASS CLI pipeline: one source event, two detection JSONL objects
+PASS flow-only pipeline: real SYN evidence, no fabricated content spans
+T14 PASS: 19 scenarios, 568 assertions; JSONL, multiple detections and pipeline integration PASS
+Exit code: 0
+
+Regression T01-T13 (repository root):
+T01_rule_loader: PASS, exit code 0
+T02_invalid_rule: PASS, exit code 0
+T03_unsupported_keyword: PASS, exit code 0
+T04_rule_header: PASS, exit code 0
+T05_direction_matching: PASS, exit code 0
+T06_rule_indexer: PASS, exit code 0
+T07_header_filtering: PASS, exit code 0
+T08_flow_matching: PASS, exit code 0
+T09_content_matching: PASS, exit code 0
+T10_offset_depth: PASS, exit code 0
+T11_distance_within: PASS, exit code 0
+T12_packet_matching: PASS, exit code 0
+T13_multiple_rule_evaluation: PASS, exit code 0
+Existing TEST files outside T14: unchanged (SHA-256 checked).
