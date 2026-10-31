@@ -1,0 +1,5 @@
+# T13: one event matches both GET and /admin rules.
+alert tcp any any -> any 80 (msg:"Match GET"; content:"GET"; sid:108301; rev:1;)
+alert tcp any any -> any 80 (msg:"Match admin path"; content:"/admin"; sid:108302; rev:1;)
+alert tcp any any -> any 80 (msg:"Content absent"; content:"secret"; sid:108303; rev:1;)
+alert tcp any any -> any 443 (msg:"Different port"; content:"GET"; sid:108304; rev:1;)
