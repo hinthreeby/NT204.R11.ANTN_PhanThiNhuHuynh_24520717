@@ -1,9 +1,15 @@
 from config import IDSConfig
+import logging
+from pathlib import Path
+from typing import Callable
 
 from decoder.decoder import Decoder
 from flow.flow_tracker import FlowTracker
 from parsers.packet_parser import process_packet
 from preprocessor.preprocessor import Preprocessor
+
+
+logger = logging.getLogger(__name__)
 
 
 class IDSPipeline:
@@ -20,6 +26,7 @@ class IDSPipeline:
     def __init__(
         self,
         config: IDSConfig | None = None,
+        detection_sink: Callable[[dict], None] | None = None,
     ) -> None:
         if config is None:
             config = IDSConfig()
@@ -38,6 +45,23 @@ class IDSPipeline:
             config
         )
 
+        self.core_engine = None
+        self.last_core_result = None
+        self._detection_sink = detection_sink
+        if config.core_engine_enabled:
+            from core_engine.engine import CoreEngine
+            from core_engine.rule_loader import RuleLoaderConfig
+
+            if not config.rule_files:
+                raise ValueError("Core Engine requires at least one rule file")
+            self.core_engine = CoreEngine.from_rule_files(
+                [Path(path) for path in config.rule_files],
+                RuleLoaderConfig(
+                    file_enabled={Path(path): False for path in config.disabled_rule_files},
+                    rule_enabled={sid: False for sid in config.disabled_rule_sids},
+                ),
+            )
+
     def expire_idle_flows(self, current_time: float) -> list[dict]:
         """Return timeout summaries without requiring another packet.
 
@@ -46,7 +70,11 @@ class IDSPipeline:
         Skipped events do not implicitly consume summaries; callers can use
         this method to advance time explicitly and collect expired flows.
         """
-        return self.flow_tracker.expire_idle_flows(current_time)
+        summaries = self.flow_tracker.expire_idle_flows(current_time)
+        if self.core_engine is not None:
+            for summary in summaries:
+                self.core_engine.forget_flow(summary["flow_id"])
+        return summaries
 
     def process_event(
         self,
@@ -56,6 +84,7 @@ class IDSPipeline:
         Process one normalized IDS event.
         """
 
+        self.last_core_result = None
         try:
             decoded_event = self.decoder.process(
                 event
@@ -81,8 +110,6 @@ class IDSPipeline:
                 )
             )
 
-            return tracked_event
-
         except Exception as exc:
             print(
                 "[ERROR] IDS pipeline failed: "
@@ -90,6 +117,20 @@ class IDSPipeline:
             )
 
             return None
+
+        if self.core_engine is not None:
+            from core_engine.detection_event import DetectionEventDataError, DetectionEventGenerator
+
+            try:
+                result = self.core_engine.process(tracked_event, tracked_event.get("flow"))
+            except DetectionEventDataError as exc:
+                logger.error("Detection source data rejected: %s", exc)
+            else:
+                self.last_core_result = result
+                if self._detection_sink is not None:
+                    for detection in result.detection_events:
+                        self._detection_sink(DetectionEventGenerator.to_dict(detection))
+        return tracked_event
 
     def process_packet(
         self,

@@ -13,3 +13,9 @@ class IDSConfig:
     max_decode_size: int = 65536
 
     skip_invalid_events: bool = False
+
+    core_engine_enabled: bool = False
+    rule_files: tuple[str, ...] = ()
+    disabled_rule_sids: tuple[int, ...] = ()
+    disabled_rule_files: tuple[str, ...] = ()
+    detection_output: str = "output/detections.jsonl"
