@@ -7,6 +7,8 @@ from .contracts import FlowContext, NormalizedEvent
 from .models import (
     CoreEngineResult,
     DetectionEvent,
+    EvaluationResult,
+    EvaluationStatistics,
     InternalRule,
     MatchResult,
     RuleText,
@@ -56,11 +58,16 @@ class RuleMatchingEngine(Protocol):
 
 
 class RuleEvaluationEngine(Protocol):
+    @property
+    def statistics(self) -> EvaluationStatistics:
+        """Read cumulative counters without changing engine state."""
+        ...
+
     def evaluate(
         self,
         normalized_event: NormalizedEvent,
         flow_context: FlowContext | None,
-    ) -> Sequence[MatchResult]:
+    ) -> EvaluationResult:
         """Evaluate all candidate rules for an event."""
         ...
 

@@ -81,6 +81,30 @@ class MatchResult:
 
 
 @dataclass(frozen=True, slots=True)
+class EvaluationResult:
+    """Store matches and counters for one completed event evaluation."""
+
+    matches: tuple[MatchResult, ...]
+    candidate_rules: int
+    events_evaluated: int = 1
+
+    @property
+    def match_count(self) -> int:
+        """Return the number of matched rules for this event."""
+
+        return len(self.matches)
+
+
+@dataclass(frozen=True, slots=True)
+class EvaluationStatistics:
+    """Store cumulative counters for completed event evaluations."""
+
+    events_evaluated_total: int = 0
+    candidate_rules_total: int = 0
+    matches_total: int = 0
+
+
+@dataclass(frozen=True, slots=True)
 class DetectionEvent:
     timestamp: float
     sid: int
