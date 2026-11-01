@@ -1,5 +1,9 @@
 import json
+import logging
 from pathlib import Path
+
+
+logger = logging.getLogger(__name__)
 
 
 class JSONLWriter:
@@ -70,4 +74,9 @@ class JSONLWriter:
         """
 
         if self.file is not None:
-            self.file.close()
+            try:
+                self.file.close()
+            except Exception:
+                if exc_value is None:
+                    raise
+                logger.exception("Output cleanup failed; preserving the original exception")
