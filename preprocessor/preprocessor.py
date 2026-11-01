@@ -89,6 +89,14 @@ def normalize_port(
     if isinstance(value, bool):
         return None
 
+    if not isinstance(value, (int, float, str)):
+        return None
+
+    if isinstance(value, float) and (
+        not math.isfinite(value) or not value.is_integer()
+    ):
+        return None
+
     try:
         port = int(value)
 
