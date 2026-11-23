@@ -1,0 +1,9 @@
+Command: python -B TEST/BT4/TC01/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS real pipeline -> DetectionEventGenerator dictionary -> AlertManager: two correct alerts
+PASS normalization, nullable classification, preserved source/flow/evidence and JSON serialization
+PASS 2002 distinct UUID4 identifiers; no implicit aggregation
+TC01 PASS: 4 scenarios; 67 assertions
