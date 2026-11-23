@@ -1,0 +1,9 @@
+Command: python -B TEST/BT4/TC02/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS default mapping: 1 CRITICAL, 2 HIGH, 3 MEDIUM, >=4 LOW; missing/null MEDIUM
+PASS custom mapping, separate fallbacks and immutable configuration snapshot
+PASS malformed priorities rejected; configuration errors explicitly reported
+TC02 PASS: 30 scenarios; 70 assertions
