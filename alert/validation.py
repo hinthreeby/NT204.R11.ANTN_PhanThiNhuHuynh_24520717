@@ -93,7 +93,9 @@ def validate_detection_event(event: object) -> dict:
             raise DetectionValidationError(f"Invalid {field}: unsupported protocol")
         normalized[field] = text
     flow_id = event["flow_id"]
-    normalized["flow_id"] = None if flow_id is None else _text(flow_id, "flow_id")
+    if flow_id is not None:
+        _text(flow_id, "flow_id")
+    normalized["flow_id"] = flow_id
     priority = event.get("priority")
     normalized["priority"] = None if priority is None else _integer(priority, "priority", 1)
     classtype = event.get("classtype")
