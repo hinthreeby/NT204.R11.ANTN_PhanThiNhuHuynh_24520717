@@ -1,0 +1,8 @@
+Command: python -B TEST/BT4/TC03/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS 109 malformed/missing cases: explicit rejection, source preserved, next valid event accepted
+PASS nullable flow_id/priority/classtype, optional fields, time/port boundaries and non-content evidence
+TC03 PASS: 113 scenarios; 561 assertions
