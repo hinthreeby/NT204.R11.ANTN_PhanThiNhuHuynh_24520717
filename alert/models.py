@@ -1,6 +1,7 @@
 from copy import deepcopy
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Literal
+from uuid import uuid4
 
 
 Severity = Literal["CRITICAL", "HIGH", "MEDIUM", "LOW"]
@@ -10,7 +11,7 @@ Severity = Literal["CRITICAL", "HIGH", "MEDIUM", "LOW"]
 class Alert:
     """Store one normalized alert and its source match evidence."""
 
-    alert_id: str
+    alert_id: str = field(default_factory=lambda: str(uuid4()))
     timestamp: float
     sid: int
     rev: int
