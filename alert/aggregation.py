@@ -1,6 +1,6 @@
 """Independent, bounded aggregation of already accepted single-event Alerts.
 
-Import AlertAggregator from this module; AlertManager is intentionally unchanged.
+Import AlertAggregator from this module to use it independently of AlertManager.
 Callers must consume result.finalized and flush() output: no closed history is
 retained internally. All output and input evidence is detached from live state.
 """
@@ -12,20 +12,7 @@ from typing import Literal
 from uuid import uuid4
 
 from .aggregation_config import AggregationConfig
-from .models import Alert
-
-
-@dataclass(frozen=True, slots=True)
-class AlertGroup:
-    """Representative summary plus lossless source metadata in arrival order.
-
-    summary keeps the opening event's metadata, timestamp and group ID; only
-    count and last_seen change. members retain every original Alert, including
-    its own ID, flow, ports, severity, revision and match evidence.
-    """
-
-    summary: Alert
-    members: tuple[Alert, ...]
+from .models import Alert, AlertGroup
 
 
 @dataclass(frozen=True, slots=True)

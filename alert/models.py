@@ -40,9 +40,35 @@ class Alert:
 
 
 @dataclass(frozen=True, slots=True)
-class AlertResult:
-    """Describe alert creation, policy decisions or invalid source data."""
+class AlertGroup:
+    """Representative summary plus lossless source metadata in arrival order.
 
-    status: Literal["created", "rejected", "filtered", "suppressed"]
+    summary keeps the opening event's metadata, timestamp and group ID; only
+    count and last_seen change. members retain every original Alert, including
+    its own ID, flow, ports, severity, revision and match evidence.
+    """
+
+    summary: Alert
+    members: tuple[Alert, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class AlertResult:
+    """Describe policy decisions and the current/finalized aggregation views.
+
+    With aggregation enabled, created opens a group; aggregated updates it.
+    finalized identifies a late singleton already included in finalized, which
+    must be consumed only once. When group is present, alert is its summary.
+    group and finalized are absent/empty when disabled or input is blocked.
+
+    A future repository can insert created groups, update aggregated groups by
+    alert_id, and upsert/close finalized groups (also returned by manager.flush).
+    Disabled created alerts are independent records ready for insertion.
+    No repository writes occur here. Existing three-argument calls remain valid.
+    """
+
+    status: Literal["created", "aggregated", "finalized", "rejected", "filtered", "suppressed"]
     alert: Alert | None
     reason: str | None
+    group: AlertGroup | None = field(default=None, kw_only=True)
+    finalized: tuple[AlertGroup, ...] = field(default=(), kw_only=True)
