@@ -1,0 +1,30 @@
+Command: python -B TEST/BT4/TC07/validate.py
+Working directory: D:\Nam3\IDPS\BaiTap
+Python: 3.10.5
+Run time: 2026-11-24T18:11:26+07:00
+PASS S01 Two same-key events within window (188 assertions)
+PASS S02 Three same-key events (258 assertions)
+PASS S03 100 consecutive events (7048 assertions)
+PASS S04 Identical timestamps (608 assertions)
+PASS S05 Exact inclusive boundary (188 assertions)
+PASS S06 Different SID: independent groups (376 assertions)
+PASS S07 Different source IP: independent groups (376 assertions)
+PASS S08 Different destination IP: independent groups (376 assertions)
+PASS S09 Exact count progression (889 assertions)
+PASS S10 Fixed first_seen anchor (400 assertions)
+PASS S11 last_seen maximum with in-window reordering (399 assertions)
+PASS S12 Stable group UUID and distinct member UUIDs (2150 assertions)
+PASS S13 Default and explicit disabled aggregation (104 assertions)
+PASS S14 Filtered input excluded from state and watermark (193 assertions)
+PASS S15 Suppressed input excluded from state and watermark (193 assertions)
+PASS S16 Rejected input excluded from state and watermark (193 assertions)
+PASS S17 Input normalization and evidence isolation (189 assertions)
+PASS S18 Per-event flow/revision/metadata preservation (260 assertions)
+PASS S19 Custom 2-second window including boundary (258 assertions)
+PASS S20 Stress: 2000 valid events, 4 keys, 500 members/group (140193 assertions)
+Total scenarios: 20; passed: 20; failed: 0
+Total assertions: 154839; passed: 154839; failed: 0
+Error details: none
+Elapsed seconds: 21.352
+TC07 PASS
+Exit code: 0
