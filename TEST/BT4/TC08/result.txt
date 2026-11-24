@@ -1,0 +1,30 @@
+Command: python -B TEST/BT4/TC08/validate.py
+Working directory: D:\Nam3\IDPS\BaiTap
+Python: 3.10.5
+Run time: 2026-11-24T18:27:26+07:00
+PASS S01 Outside window creates a new group (203 assertions)
+PASS S02 Smallest representable timestamp after boundary (203 assertions)
+PASS S03 Exact boundary remains inside window (197 assertions)
+PASS S04 Two consecutive windows with same key (385 assertions)
+PASS S05 Ten consecutive windows with same key (1889 assertions)
+PASS S06 Fresh UUIDs across successive groups (300 assertions)
+PASS S07 Count resets and then increments in new group (496 assertions)
+PASS S08 New group fractional first_seen and last_seen (294 assertions)
+PASS S09 Sparse stream retains every expired group (300 assertions)
+PASS S10 Finalized snapshot stability and evidence isolation (577 assertions)
+PASS S11 Out-of-order input does not reopen expired window (593 assertions)
+PASS S12 Input before first_seen becomes finalized singleton (391 assertions)
+PASS S13 Independent SID/source/destination keys expire separately (779 assertions)
+PASS S14 Small one-second window (294 assertions)
+PASS S15 Large 86400-second window (405 assertions)
+PASS S16 Flush clears groups once and retains watermark (401 assertions)
+PASS S17 Mixed reordered events preserve exact counts (1029 assertions)
+PASS S18 Filtering suppression rejection do not advance window (315 assertions)
+PASS S19 Fixed window does not slide from last_seen (294 assertions)
+PASS S20 Stress: 3000 events and 1500 finalized groups (285011 assertions)
+Total scenarios: 20; passed: 20; failed: 0
+Total assertions: 294356; passed: 294356; failed: 0
+Error details: none
+Elapsed seconds: 2.115
+TC08 PASS
+Exit code: 0
