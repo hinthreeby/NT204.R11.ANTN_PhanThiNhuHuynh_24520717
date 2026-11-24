@@ -1,0 +1,15 @@
+Command: python -B TEST/BT4/TC05/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS configured SID: suppressed
+PASS unlisted SID: created
+PASS empty suppression: created
+PASS several SIDs first: suppressed
+PASS several SIDs last: suppressed
+PASS suppression beats severity: suppressed
+PASS suppression beats empty allowlists: suppressed
+PASS severity without suppression: filtered
+PASS immutable/deduplicated config, strict SID validation and recovery after suppressed events
+TC05 PASS: 27 scenarios; 62 assertions
