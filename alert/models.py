@@ -41,8 +41,8 @@ class Alert:
 
 @dataclass(frozen=True, slots=True)
 class AlertResult:
-    """Describe alert creation or a rejected Detection Event."""
+    """Describe alert creation, policy decisions or invalid source data."""
 
-    status: Literal["created", "rejected"]
+    status: Literal["created", "rejected", "filtered", "suppressed"]
     alert: Alert | None
     reason: str | None
