@@ -1,0 +1,13 @@
+Command: python -B TEST/BT4/TC04/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS minimum=None: accepted priorities=[1, 2, 3, 4]
+PASS minimum=LOW: accepted priorities=[1, 2, 3, 4]
+PASS minimum=MEDIUM: accepted priorities=[1, 2, 3]
+PASS minimum=HIGH: accepted priorities=[1, 2]
+PASS minimum=CRITICAL: accepted priorities=[1]
+PASS missing/null priority, custom severity mapping, invalid config and validation precedence
+PASS filtered events allocate no UUID and do not mutate the source
+TC04 PASS: 39 scenarios; 194 assertions
