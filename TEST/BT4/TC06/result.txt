@@ -1,0 +1,15 @@
+Command: python -B TEST/BT4/TC06/validate.py
+Working directory: repository root
+Python: 3.10.5
+Exit code: 0
+
+PASS different SID: two UUID4 alerts; count=1; source/evidence isolated
+PASS same SID different source: two UUID4 alerts; count=1; source/evidence isolated
+PASS same SID different destination: two UUID4 alerts; count=1; source/evidence isolated
+PASS different timestamp: two UUID4 alerts; count=1; source/evidence isolated
+PASS identical events remain independent: two UUID4 alerts; count=1; source/evidence isolated
+PASS same SID different revision: two UUID4 alerts; count=1; source/evidence isolated
+PASS different flow and evidence: two UUID4 alerts; count=1; source/evidence isolated
+PASS 100-event stream: 40 created, 20 filtered, 20 suppressed, 20 rejected; 40 UUIDs
+PASS optional exact-IP/protocol policies: normalized comparisons, None/empty semantics and config snapshots
+TC06 PASS: 130 scenarios; 1083 assertions
