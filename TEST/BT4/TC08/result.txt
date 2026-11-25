@@ -1,7 +1,7 @@
 Command: python -B TEST/BT4/TC08/validate.py
 Working directory: D:\Nam3\IDPS\BaiTap
 Python: 3.10.5
-Run time: 2026-11-24T18:27:26+07:00
+Run time: 2026-11-24T18:41:03+07:00
 PASS S01 Outside window creates a new group (203 assertions)
 PASS S02 Smallest representable timestamp after boundary (203 assertions)
 PASS S03 Exact boundary remains inside window (197 assertions)
@@ -25,6 +25,6 @@ PASS S20 Stress: 3000 events and 1500 finalized groups (285011 assertions)
 Total scenarios: 20; passed: 20; failed: 0
 Total assertions: 294356; passed: 294356; failed: 0
 Error details: none
-Elapsed seconds: 2.115
+Elapsed seconds: 2.401
 TC08 PASS
 Exit code: 0
