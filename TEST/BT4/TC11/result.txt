@@ -1,0 +1,26 @@
+TC11 - Severity Statistics
+Run time: 2026-11-27T00:35:48.448954+07:00
+Python: 3.10.5; SQLite: real temporary databases
+01. PASS Total alerts versus total Detection Events (5 assertions)
+02. PASS Severity CRITICAL (4 assertions)
+03. PASS Severity HIGH (4 assertions)
+04. PASS Severity MEDIUM (4 assertions)
+05. PASS Severity LOW (4 assertions)
+06. PASS Mixed severities and aggregated count conservation (5 assertions)
+07. PASS Real aggregation insert/update including window boundary (11 assertions)
+08. PASS Empty SQLite report (5 assertions)
+09. PASS Time range includes start and excludes end; opening time not last_seen (5 assertions)
+10. PASS From-time only (5 assertions)
+11. PASS To-time only (5 assertions)
+12. PASS Equal bounds give empty report (5 assertions)
+13. PASS Outside range gives empty report (5 assertions)
+14. PASS Distinct Alerts sharing SID/IP are counted independently (5 assertions)
+15. PASS Exact large aggregated count totals (4 assertions)
+16. PASS Repeated reporting does not mutate SQLite data (7 assertions)
+17. PASS Severity report after database reopen (3 assertions)
+Scenarios: 17; passed: 17; failed: 0
+Assertions: 86 (attempted)
+Error details: none
+Elapsed seconds: 2.823
+TC11 PASS
+Exit code: 0
