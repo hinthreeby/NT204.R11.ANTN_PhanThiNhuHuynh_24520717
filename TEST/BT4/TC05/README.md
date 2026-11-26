@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra suppression theo SID cấu hình, độc lập với Core Engine (PDF BT4, mục 2.2 và TC05).
+Kiểm tra suppression theo SID cấu hình, độc lập với Core Engine.
 
 ## Input/Scenario
 

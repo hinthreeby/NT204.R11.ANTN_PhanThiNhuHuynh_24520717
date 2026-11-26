@@ -1,0 +1,47 @@
+Command: python -B TEST/BT4/TC10/validate.py
+Working directory: D:\Nam3\IDPS\BaiTap
+Python: 3.10.5; SQLite: 3.37.2
+Run time: 2026-11-26T23:47:16+07:00
+Policy: alerts.timestamp; [from_time,to_time); AND; timestamp ASC then alert_id ASC
+Database policy: temporary SQLite outside repository; explicit expected fixture IDs
+PASS S01 Query all and all filters omitted/None (814 assertions)
+PASS S02 Query from_time (255 assertions)
+PASS S03 Query to_time (173 assertions)
+PASS S04 Query from/to range (219 assertions)
+PASS S05 Inclusive start boundary and next representable float (98 assertions)
+PASS S06 Exclusive end boundary and next representable float (182 assertions)
+PASS S07 Ranges outside data or inside a timestamp gap (19 assertions)
+PASS S08 CRITICAL severity (91 assertions)
+PASS S09 HIGH severity (173 assertions)
+PASS S10 MEDIUM severity (91 assertions)
+PASS S11 LOW severity (91 assertions)
+PASS S12 Existing SID including integer beyond 64 bits (306 assertions)
+PASS S13 Missing SID and exact SID matching (14 assertions)
+PASS S14 Source IP (214 assertions)
+PASS S15 Destination IP (214 assertions)
+PASS S16 Source and destination IP use AND (229 assertions)
+PASS S17 Time and severity (138 assertions)
+PASS S18 Time and SID (95 assertions)
+PASS S19 Time and source IP (138 assertions)
+PASS S20 Time and destination IP (138 assertions)
+PASS S21 All six filters with positive and negative AND controls (111 assertions)
+PASS S22 Empty result from conflicting valid filters (9 assertions)
+PASS S23 Invalid time range and equal empty bounds (417 assertions)
+PASS S24 Invalid timestamp types and non-finite values (475 assertions)
+PASS S25 Invalid severity (436 assertions)
+PASS S26 Invalid SID types/range (439 assertions)
+PASS S27 SQL injection through every query filter (422 assertions)
+PASS S28 IPv4 accepted; IPv6/noncanonical IP rejected (278 assertions)
+PASS S29 Deterministic ordering independent of insertion and UUID time order (1489 assertions)
+PASS S30 Queries after database reopen (721 assertions)
+PASS S31 Query real aggregated Alert and opening timestamp policy (116 assertions)
+PASS S32 Query expired/late/flushed finalized Alert (274 assertions)
+PASS S33 Empty database (27 assertions)
+PASS S34 Repeated query consistency and detached metadata (1116 assertions)
+PASS S35 Queries do not mutate rows/schema/database bytes (4587 assertions)
+Total scenarios: 35; passed: 35; failed: 0
+Total assertions: 14609; passed: 14609; failed: 0
+Error details: none
+Elapsed seconds: 6.095
+TC10 PASS
+Exit code: 0

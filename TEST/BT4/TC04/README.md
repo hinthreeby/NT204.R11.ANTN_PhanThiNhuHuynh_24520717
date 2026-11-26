@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra minimum severity sau mapping, trước khi tạo Alert (PDF BT4, mục 2.2 và TC04).
+Kiểm tra minimum severity sau mapping, trước khi tạo Alert.
 
 ## Input/Scenario
 

@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra các event được phép tạo Alert riêng, chưa aggregation (PDF BT4, TC06).
+Kiểm tra các event được phép tạo Alert riêng, chưa aggregation.
 
 ## Input/Scenario
 
