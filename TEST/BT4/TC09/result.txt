@@ -1,7 +1,7 @@
 Command: python -B TEST/BT4/TC09/validate.py
 Working directory: D:\Nam3\IDPS\BaiTap
 Python: 3.10.5; SQLite: 3.37.2
-Run time: 2026-11-26T23:39:20+07:00
+Run time: 2026-11-26T23:56:23+07:00
 Database policy: temporary directories outside repository; no production database used
 PASS S01 Insert a valid Alert (56 assertions)
 PASS S02 Read an Alert by ID and handle missing ID (53 assertions)
@@ -30,6 +30,6 @@ PASS S24 Persist expired, late and flushed finalized groups (315 assertions)
 Total scenarios: 24; passed: 24; failed: 0
 Total assertions: 4694; passed: 4694; failed: 0
 Error details: none
-Elapsed seconds: 2.369
+Elapsed seconds: 1.961
 TC09 PASS
 Exit code: 0

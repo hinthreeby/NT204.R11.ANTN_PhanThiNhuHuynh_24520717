@@ -1,7 +1,7 @@
 Command: python -B TEST/BT4/TC10/validate.py
 Working directory: D:\Nam3\IDPS\BaiTap
 Python: 3.10.5; SQLite: 3.37.2
-Run time: 2026-11-26T23:47:16+07:00
+Run time: 2026-11-26T23:56:25+07:00
 Policy: alerts.timestamp; [from_time,to_time); AND; timestamp ASC then alert_id ASC
 Database policy: temporary SQLite outside repository; explicit expected fixture IDs
 PASS S01 Query all and all filters omitted/None (814 assertions)
@@ -42,6 +42,6 @@ PASS S35 Queries do not mutate rows/schema/database bytes (4587 assertions)
 Total scenarios: 35; passed: 35; failed: 0
 Total assertions: 14609; passed: 14609; failed: 0
 Error details: none
-Elapsed seconds: 6.095
+Elapsed seconds: 5.515
 TC10 PASS
 Exit code: 0

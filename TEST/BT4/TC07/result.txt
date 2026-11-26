@@ -21,3 +21,10 @@ PASS S16 Rejected input excluded from state and watermark (193 assertions)
 PASS S17 Input normalization and evidence isolation (189 assertions)
 PASS S18 Per-event flow/revision/metadata preservation (260 assertions)
 PASS S19 Custom 2-second window including boundary (258 assertions)
+PASS S20 Stress: 2000 valid events, 4 keys, 500 members/group (140193 assertions)
+Total scenarios: 20; passed: 20; failed: 0
+Total assertions: 154839; passed: 154839; failed: 0
+Error details: none
+Elapsed seconds: 16.437
+TC07 PASS
+Exit code: 0
