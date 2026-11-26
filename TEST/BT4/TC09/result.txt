@@ -1,0 +1,35 @@
+Command: python -B TEST/BT4/TC09/validate.py
+Working directory: D:\Nam3\IDPS\BaiTap
+Python: 3.10.5; SQLite: 3.37.2
+Run time: 2026-11-26T23:39:20+07:00
+Database policy: temporary directories outside repository; no production database used
+PASS S01 Insert a valid Alert (56 assertions)
+PASS S02 Read an Alert by ID and handle missing ID (53 assertions)
+PASS S03 Multiple independent Alerts (1504 assertions)
+PASS S04 Preserve UUID4 identities (413 assertions)
+PASS S05 Preserve SID including integers beyond 64 bits (204 assertions)
+PASS S06 Preserve all severity levels (204 assertions)
+PASS S07 Preserve source/destination IP and ports (54 assertions)
+PASS S08 Preserve transport/application protocols (204 assertions)
+PASS S09 Preserve epoch timestamps exactly (204 assertions)
+PASS S10 Preserve distinct timestamp/first_seen/last_seen (54 assertions)
+PASS S11 Preserve positive counts and reject invalid counts (220 assertions)
+PASS S12 Preserve Unicode and quoted messages (54 assertions)
+PASS S13 Preserve nullable flow_id/priority/classtype (54 assertions)
+PASS S14 Preserve nested metadata and match evidence (146 assertions)
+PASS S15 Close safely and reopen a database (58 assertions)
+PASS S16 Data persists across a new Python process (265 assertions)
+PASS S17 Persist aggregate count updates without duplicate rows (224 assertions)
+PASS S18 Reject duplicate alert ID without overwrite (105 assertions)
+PASS S19 Reject invalid database paths without destroying fixtures (18 assertions)
+PASS S20 Real SQLite write failure and connection recovery (57 assertions)
+PASS S21 Roll back a multi-write transaction and trigger side effects (111 assertions)
+PASS S22 Empty database and missing records (6 assertions)
+PASS S23 Do not mutate insert/update inputs or alias read metadata (111 assertions)
+PASS S24 Persist expired, late and flushed finalized groups (315 assertions)
+Total scenarios: 24; passed: 24; failed: 0
+Total assertions: 4694; passed: 4694; failed: 0
+Error details: none
+Elapsed seconds: 2.369
+TC09 PASS
+Exit code: 0
