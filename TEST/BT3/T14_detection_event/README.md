@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Detection Event đầy đủ theo PDF Bài 3, mục 4.6, 5 và T14.
+Kiểm tra Detection Event đầy đủ.
 
 ## Input/Scenario
 

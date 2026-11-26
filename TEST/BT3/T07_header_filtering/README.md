@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra rule sai header bị loại trước bước xử lý content (PDF Bài 3, mục 7, T07).
+Kiểm tra rule sai header bị loại trước bước xử lý content.
 
 ## Input/Scenario
 

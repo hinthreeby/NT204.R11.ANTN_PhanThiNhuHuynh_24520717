@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra `->` đúng chiều và `<>` hai chiều bằng Parser và Header Matcher thực tế (PDF Bài 3, mục 7, T05).
+Kiểm tra `->` đúng chiều và `<>` hai chiều bằng Parser và Header Matcher thực tế.
 
 ## Input/Scenario
 

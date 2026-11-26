@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra flags và dsize theo normalized event thực tế (PDF Bài 3, mục 3, 4.4 và T12).
+Kiểm tra flags và dsize theo normalized event thực tế.
 
 ## Input/Scenario
 

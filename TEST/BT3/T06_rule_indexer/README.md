@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra tập candidate và Header Filtering theo PDF Bài 3, mục 4.3 và mục 7, T06.
+Kiểm tra tập candidate và Header Filtering.
 
 ## Input/Scenario
 

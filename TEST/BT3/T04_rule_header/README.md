@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra header được chuyển đúng thành Internal Rule Object theo PDF Bài 3, trang 4, mục 7, T04.
+Kiểm tra header được chuyển đúng thành Internal Rule Object.
 
 ## Input/Scenario
 

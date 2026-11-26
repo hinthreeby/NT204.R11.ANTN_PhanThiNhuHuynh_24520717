@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra Loader lọc comment/dòng trống và chuyển rule sang Validator, theo PDF Bài 3, trang 3, mục 7, T01.
+Kiểm tra Loader lọc comment/dòng trống và chuyển rule sang Validator.
 
 ## Input/Scenario
 

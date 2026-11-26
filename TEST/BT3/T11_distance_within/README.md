@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra distance/within và chuỗi content hợp lệ theo PDF Bài 3, mục 7, T11.
+Kiểm tra distance/within và chuỗi content hợp lệ.
 
 ## Input/Scenario
 

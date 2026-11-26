@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra content chỉ match trong vùng offset/depth theo PDF Bài 3, mục 7, T10.
+Kiểm tra content chỉ match trong vùng offset/depth.
 
 ## Input/Scenario
 

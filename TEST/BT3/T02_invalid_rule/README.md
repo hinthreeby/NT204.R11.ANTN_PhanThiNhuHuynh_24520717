@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra rule sai cú pháp được đánh dấu invalid, có lý do và không làm dừng xử lý các rule tiếp theo (PDF Bài 3, mục 7, T02).
+Kiểm tra rule sai cú pháp được đánh dấu invalid, có lý do và không làm dừng xử lý các rule tiếp theo.
 
 ## Input/Scenario
 

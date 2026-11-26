@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra `flow:to_server,established` và các flow term bắt buộc (PDF Bài 3, mục 3, 4.4 và T08).
+Kiểm tra `flow:to_server,established` và các flow term bắt buộc.
 
 ## Input/Scenario
 

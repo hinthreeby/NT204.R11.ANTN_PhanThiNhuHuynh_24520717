@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra content phân biệt hoa/thường và nocase theo PDF Bài 3, mục 7, T09.
+Kiểm tra content phân biệt hoa/thường và nocase.
 
 ## Input/Scenario
 

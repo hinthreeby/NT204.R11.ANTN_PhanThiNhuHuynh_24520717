@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra keyword ngoài phạm vi được đánh dấu unsupported, có lý do và không dừng xử lý (PDF Bài 3, mục 3, 4.2 và T03).
+Kiểm tra keyword ngoài phạm vi được đánh dấu unsupported, có lý do và không dừng xử lý.
 
 ## Input/Scenario
 

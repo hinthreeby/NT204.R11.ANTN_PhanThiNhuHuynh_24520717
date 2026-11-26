@@ -2,7 +2,7 @@
 
 ## Mục tiêu
 
-Kiểm tra một event trả đầy đủ MATCH cho ít nhất hai rule theo PDF Bài 3, mục 7, T13.
+Kiểm tra một event trả đầy đủ MATCH cho ít nhất hai rule.
 
 ## Input/Scenario
 
