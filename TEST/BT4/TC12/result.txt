@@ -1,0 +1,27 @@
+TC12 - Top SID, Classtype and IP Statistics
+Run time: 2026-11-27T00:35:48.445420+07:00
+Python: 3.10.5; SQLite: real temporary databases
+01. PASS Exact top_sids (5 assertions)
+02. PASS Exact top_classtypes (4 assertions)
+03. PASS Exact top_src_ips (5 assertions)
+04. PASS Exact top_dst_ips (5 assertions)
+05. PASS Deterministic SID/classtype/IP ties and cutoff (8 assertions)
+06. PASS Custom top_n=1 (8 assertions)
+07. PASS Custom top_n=3 (8 assertions)
+08. PASS Top-N larger than category cardinality (8 assertions)
+09. PASS Rank by Detection Events rather than Alert Objects (6 assertions)
+10. PASS Empty SQLite report (4 assertions)
+11. PASS Time range affects every ranking (8 assertions)
+12. PASS Boundary, equal bounds and opening timestamp policy (5 assertions)
+13. PASS Real aggregation insert/update changes ranking (7 assertions)
+14. PASS Nullable and Unicode classtypes (4 assertions)
+15. PASS Insertion order does not affect ranking (4 assertions)
+16. PASS Rankings after database reopen (4 assertions)
+17. PASS Repeated report/formatting does not mutate inputs or SQLite (8 assertions)
+18. PASS Invalid top_n rejected without storage mutation (9 assertions)
+Scenarios: 18; passed: 18; failed: 0
+Assertions: 110 (attempted)
+Error details: none
+Elapsed seconds: 3.142
+TC12 PASS
+Exit code: 0
