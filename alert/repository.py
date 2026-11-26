@@ -1,11 +1,12 @@
 """Persistent SQLite storage for accepted Alert snapshots, independent of matching.
 
-Every insert/update is its own transaction. Duplicate insert raises SQLite's
-IntegrityError; update of an unknown ID raises KeyError. No implicit upsert,
-history reset, rule matching or reporting is performed.
+Each write operation (including apply_changes) is one transaction. Duplicate
+insert raises SQLite's IntegrityError; update of an unknown ID raises KeyError.
+No implicit upsert, history reset, rule matching or reporting is performed.
 """
 
 from ipaddress import IPv4Address
+from collections.abc import Iterable
 import json
 import math
 from pathlib import Path
@@ -160,7 +161,7 @@ class AlertRepository:
     opening timestamp, distinct from first_seen/last_seen. Evidence is JSON TEXT.
     SID/rev/priority are canonical decimal TEXT on disk and int in the public API.
     Only Alert fields are stored: an AlertGroup's member list is not implicitly
-    included in its summary. Group ingestion/lifecycle integration is a later task.
+    included in its summary. The persistence adapter writes group summaries.
     Connections are single-threaded. Each write commits before returning.
     """
 
@@ -207,11 +208,7 @@ class AlertRepository:
 
     def insert(self, alert: Alert) -> None:
         """Insert a new ID; duplicate IDs raise sqlite3.IntegrityError with rollback."""
-        connection = self._open()
-        values = _encode(alert)
-        with connection:
-            connection.execute(
-                f"INSERT INTO alerts ({','.join(_COLUMNS)}) VALUES ({','.join('?' for _ in _COLUMNS)})", values)
+        self.apply_changes(inserts=(alert,))
 
     def get_by_id(self, alert_id: str) -> Alert | None:
         """Read a detached Alert, or None for an unknown ID."""
@@ -228,14 +225,93 @@ class AlertRepository:
         No stale-snapshot ordering policy is inferred; callers choose the latest
         summary. This method neither changes IDs nor inserts missing records.
         """
+        self.apply_changes(updates=(alert,))
+
+    def apply_changes(
+        self, *, inserts: Iterable[Alert] = (), updates: Iterable[Alert] = (),
+    ) -> None:
+        """Commit inserts and snapshot replacements together, or roll back all.
+
+        Validate every snapshot before SQL. Each ID may occur only once in a
+        batch. Repeating the same update in a later call is idempotent: count
+        is replaced, never incremented in SQL. Missing updates remain errors.
+        """
         connection = self._open()
-        values = _encode(alert)
+        new_values = tuple(_encode(alert) for alert in inserts)
+        updated_values = tuple(_encode(alert) for alert in updates)
+        identifiers = [values[0] for values in new_values + updated_values]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("Each alert_id must occur only once in apply_changes")
         with connection:
-            cursor = connection.execute(
-                f"UPDATE alerts SET {','.join(name + ' = ?' for name in _COLUMNS[1:])} WHERE alert_id = ?",
-                values[1:] + values[:1])
-            if cursor.rowcount != 1:
-                raise KeyError(alert.alert_id)
+            for values in new_values:
+                connection.execute(
+                    f"INSERT INTO alerts ({','.join(_COLUMNS)}) VALUES ({','.join('?' for _ in _COLUMNS)})",
+                    values)
+            for values in updated_values:
+                cursor = connection.execute(
+                    f"UPDATE alerts SET {','.join(name + ' = ?' for name in _COLUMNS[1:])} WHERE alert_id = ?",
+                    values[1:] + values[:1])
+                if cursor.rowcount != 1:
+                    raise KeyError(values[0])
+
+    def query(
+        self, *, from_time: float | int | None = None, to_time: float | int | None = None,
+        severity: str | None = None, sid: int | None = None,
+        src_ip: str | None = None, dst_ip: str | None = None,
+    ) -> list[Alert]:
+        """Read snapshots matching all supplied filters, ordered by timestamp/ID.
+
+        Time is UTC Unix epoch seconds on alerts.timestamp (the opening event),
+        NOT last_seen or interval overlap. Bounds are [from_time, to_time);
+        omitted bounds are unbounded, equal bounds give [], reversed bounds fail.
+        Severity must be canonical uppercase; IPs must be canonical IPv4 strings.
+        This method only SELECTs and returns detached Alerts, including open
+        snapshots already persisted by the adapter. No reporting is performed.
+        """
+        connection = self._open()
+        bounds = {}
+        for name, value in (("from_time", from_time), ("to_time", to_time)):
+            if value is None:
+                continue
+            if type(value) not in (int, float):
+                raise ValueError(f"{name} must be finite non-negative epoch seconds or None")
+            try:
+                number = float(value)
+            except OverflowError as exc:
+                raise ValueError(f"{name} exceeds the supported numeric range") from exc
+            if not math.isfinite(number) or number < 0:
+                raise ValueError(f"{name} must be finite non-negative epoch seconds")
+            bounds[name] = number
+        if "from_time" in bounds and "to_time" in bounds and bounds["from_time"] > bounds["to_time"]:
+            raise ValueError("from_time must be <= to_time")
+        if severity is not None and (not isinstance(severity, str) or severity not in SEVERITIES):
+            raise ValueError("severity must be CRITICAL, HIGH, MEDIUM, LOW or None")
+        if sid is not None and (type(sid) is not int or sid < 1):
+            raise ValueError("sid must be a positive integer or None")
+        for name, value in (("src_ip", src_ip), ("dst_ip", dst_ip)):
+            if value is not None:
+                if not isinstance(value, str):
+                    raise ValueError(f"{name} must be a normalized IPv4 string or None")
+                try:
+                    if str(IPv4Address(value)) != value:
+                        raise ValueError("Not canonical IPv4")
+                except ValueError as exc:
+                    raise ValueError(f"{name} must be a normalized IPv4 string") from exc
+        clauses, parameters = [], []
+        for name, operator in (("from_time", ">="), ("to_time", "<")):
+            if name in bounds:
+                clauses.append(f"timestamp {operator} ?")
+                parameters.append(bounds[name])
+        for name, value in (("severity", severity), ("sid", str(sid) if sid is not None else None),
+                            ("src_ip", src_ip), ("dst_ip", dst_ip)):
+            if value is not None:
+                clauses.append(f"{name} = ?")
+                parameters.append(value)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        result = connection.execute(
+            f"SELECT {','.join(_COLUMNS)} FROM alerts{where} ORDER BY timestamp ASC, alert_id ASC",
+            parameters)
+        return [_decode(row) for row in result.fetchall()]
 
     def close(self) -> None:
         """Release the connection; repeated close is safe."""

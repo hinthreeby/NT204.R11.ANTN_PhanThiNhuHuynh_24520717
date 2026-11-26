@@ -6,11 +6,13 @@ from .manager import AlertManager
 from .models import Alert, AlertResult
 from .repository import AlertRepository, RepositoryDataError, RepositorySchemaError
 from .repository_config import RepositoryConfig
+from .repository_integration import AlertPersistenceAdapter, PendingPersistenceError, PersistenceWriteError
 from .severity import SeverityConfig
 
 
 __all__ = [
     "AggregationConfig", "Alert", "AlertFilterConfig", "AlertManager", "AlertResult",
     "AlertRepository", "RepositoryConfig", "RepositoryDataError", "RepositorySchemaError",
+    "AlertPersistenceAdapter", "PendingPersistenceError", "PersistenceWriteError",
     "SeverityConfig",
 ]
