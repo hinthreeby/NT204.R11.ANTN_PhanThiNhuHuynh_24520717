@@ -1,0 +1,25 @@
+TC13 - Protocol and Time Statistics
+Run time: 2026-11-27T13:35:11.590128+07:00
+Python: 3.10.5; SQLite: 3.37.2; real temporary databases
+01. PASS TCP/UDP distribution and metric conservation (6 assertions)
+02. PASS ICMP explicitly rejected: unsupported by current storage contract (5 assertions)
+03. PASS HTTP/DNS/SMTP/UNKNOWN application distribution (5 assertions)
+04. PASS Multiple UTC hour buckets and aggregation weights (5 assertions)
+05. PASS Multiple UTC minute buckets (3 assertions)
+06. PASS Immediately before/on/after hour boundary (3 assertions)
+07. PASS Immediately before/on/after minute boundary (3 assertions)
+08. PASS Equivalent UTC and UTC+07 timestamps (6 assertions)
+09. PASS Range boundaries affect protocol and time statistics (6 assertions)
+10. PASS Use opening timestamp rather than last_seen (5 assertions)
+11. PASS Real aggregation across an hour boundary (8 assertions)
+12. PASS Empty hour and minute reports (10 assertions)
+13. PASS Sparse buckets over a large time range (5 assertions)
+14. PASS Epoch zero is a valid timestamp (4 assertions)
+15. PASS Reporting does not mutate SQLite data (7 assertions)
+16. PASS Statistics survive database reopen (3 assertions)
+Scenarios: 16; passed: 16; failed: 0
+Assertions: 84 (attempted)
+Error details: none
+Elapsed seconds: 2.026
+TC13 PASS
+Exit code: 0
