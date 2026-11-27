@@ -1,0 +1,31 @@
+TC14 - Human-readable and JSON Report Output
+Run time: 2026-11-27T13:35:11.595795+07:00
+Python: 3.10.5; SQLite: 3.37.2; real temporary databases
+01. PASS Human-readable title, sections and policies (16 assertions)
+02. PASS Parseable JSON with complete statistics and exact expected values (15 assertions)
+03. PASS Period and normalized UTC timestamps (6 assertions)
+04. PASS Separate Total alerts and Total count (4 assertions)
+05. PASS Severity breakdown text and JSON (4 assertions)
+06. PASS SID and classtype full statistics and Top-N (10 assertions)
+07. PASS Top source and destination IP (6 assertions)
+08. PASS Transport and application protocol statistics (6 assertions)
+09. PASS Hour buckets in both outputs with matching ISO/epoch times (8 assertions)
+10. PASS Minute buckets in both outputs with matching ISO/epoch times (12 assertions)
+11. PASS Text and JSON agree within every statistics section (13 assertions)
+12. PASS Valid empty text and JSON report (24 assertions)
+13. PASS Unicode, escaped quotes/newline and nullable classtype (6 assertions)
+14. PASS Console and caller-supplied stream (4 assertions)
+15. PASS Explicit UTF-8 output files outside repository (7 assertions)
+16. PASS Formatting/printing creates no implicit report files (3 assertions)
+17. PASS Report, detached output and stored data immutability (5 assertions)
+18. PASS Stored data update changes report values and rankings (11 assertions)
+19. PASS Time range changes output metrics and buckets (7 assertions)
+20. PASS Unbounded period in text and JSON (4 assertions)
+21. PASS Deterministic output and database reopen (7 assertions)
+22. PASS Invalid input and write errors reported explicitly (8 assertions)
+Scenarios: 22; passed: 22; failed: 0
+Assertions: 186 (attempted)
+Error details: none
+Elapsed seconds: 2.149
+TC14 PASS
+Exit code: 0
