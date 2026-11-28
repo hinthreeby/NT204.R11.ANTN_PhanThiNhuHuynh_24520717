@@ -55,6 +55,9 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("--disable-rule", type=int, action="append", default=[], metavar="SID", help="Disable one SID; may be repeated")
     parser.add_argument("--disable-rule-file", action="append", default=[], metavar="PATH", help="Disable one rule file; may be repeated")
 
+    from alert.cli import add_alert_arguments
+    add_alert_arguments(parser)
+
     return parser
 
 
@@ -179,6 +182,8 @@ def run_pipeline(args: argparse.Namespace, pipeline: IDSPipeline) -> None:
 def main() -> None:
     parser = build_argument_parser()
     args = parser.parse_args()
+    from alert.cli import AlertCLI
+    alerts = AlertCLI.from_args(parser, args)
     if not args.enable_core_engine:
         if args.rules or args.detection_output or args.disable_rule or args.disable_rule_file:
             parser.error("Core Engine options require --enable-core-engine")
@@ -203,10 +208,30 @@ def main() -> None:
         other = Path(path).resolve()
         if detection_path == other or (detection_path.exists() and other.exists() and detection_path.samefile(other)):
             parser.error("Detection output must differ from normalized output and input files")
+    if alerts is not None:
+        try:
+            alerts.validate_paths(
+                [*args.rules, *args.disable_rule_file, *[p for p in (args.pcap, args.events) if p]],
+                [args.output, config.detection_output],
+            )
+            for path in (args.pcap, args.events):
+                if path is not None and not Path(path).is_file():
+                    raise ValueError(f"Input file not found: {path}")
+        except (ValueError, OSError) as exc:
+            parser.error(str(exc))
     with ExitStack() as stack:
+        if alerts is not None:
+            alerts.open(stack)
         writer = stack.enter_context(JSONLWriter(config.detection_output))
-        pipeline = IDSPipeline(config, detection_sink=writer.write_event)
+        def detection_sink(detection: dict) -> None:
+            writer.write_event(detection)
+            if alerts is not None:
+                alerts.process(detection)
+
+        pipeline = IDSPipeline(config, detection_sink=detection_sink)
         run_pipeline(args, pipeline)
+        if alerts is not None:
+            alerts.finish()
 
 
 if __name__ == "__main__":
